@@ -12,3 +12,10 @@ else
     end
     puts "В принципе не важно, всё равно скоро будет ruby."
 end
+
+puts "Введите команду языка ruby:"
+user_ruby_command = $stdin.gets.chomp
+eval(user_ruby_command)
+puts "Введите команду OC:"
+user_os_command= $stdin.gets.chomp
+Kernel.`(user_os_command)
