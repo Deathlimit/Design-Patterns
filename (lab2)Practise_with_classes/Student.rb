@@ -1,7 +1,7 @@
 class Student
   attr_accessor :last_name, :first_name, :patronymic_name, :id, :phone, :telegram, :email, :git
   
-  def initialize(last_name, first_name, patronymic_name, id = nil, phone = nil, telegram = nil, email = nil, git = nil)
+  def initialize(last_name, first_name, patronymic_name, id: nil, phone: nil, telegram: nil, email: nil, git: nil)
     @last_name = last_name
     @first_name = first_name
     @patronymic_name = patronymic_name
@@ -17,9 +17,9 @@ class Student
     Фамилия: #{@last_name},
     Имя: #{@first_name},
     Отчество: #{@patronymic_name}, 
-    Телефон: #{@phone},
-    Телеграм: #{@telegram}, 
-    Почта: #{@email},
-    Гит: #{@git}"
+    Телефон: #{@phone || 'не указан'},
+    Телеграм: #{@telegram || 'не указан'}, 
+    Почта: #{@email || 'не указана'},
+    Гит: #{@git || 'не указан'}"
   end
 end
