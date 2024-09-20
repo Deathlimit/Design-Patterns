@@ -6,7 +6,7 @@ class Student
     @first_name = first_name
     @patronymic_name = patronymic_name
     @id = id
-    @phone = phone
+    self.phone = phone
     @telegram = telegram
     @email = email
     @git = git
@@ -22,4 +22,17 @@ class Student
     Почта: #{@email || 'не указана'},
     Гит: #{@git || 'не указан'}"
   end
+
+  def phone=(phone)
+    if phone.nil? || Student.phone_regex_valid?(phone)
+      @phone = phone
+    else
+      raise ArgumentError, "Некорректный формат телефонного номера: #{phone}"
+    end
+  end
+
+  def self.phone_regex_valid?(phone)
+    phone.match?(/^\+?[1-9][0-9]{7,14}$/)
+  end
+  
 end
