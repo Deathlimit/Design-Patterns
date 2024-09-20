@@ -10,6 +10,17 @@ class Student
     @git = git
   end
 
+  def to_s
+    "ID: #{@id},
+    Фамилия: #{@last_name},
+    Имя: #{@first_name},
+    Отчество: #{@patronymic_name}, 
+    Телефон: #{@phone},
+    Телеграм: #{@telegram}, 
+    Почта: #{@email},
+    Гит: #{@git}"
+  end
+
   def get_last_name
     @last_name
   end
