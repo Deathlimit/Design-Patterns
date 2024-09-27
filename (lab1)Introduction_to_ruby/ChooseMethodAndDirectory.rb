@@ -16,17 +16,26 @@ def first_positive_element_finder (elements)
         end
         i+=1
     end
-    return "Положительное число не найдено."
+    return nil
 end
   
 method_number = ARGV[0].to_i
 file_path = ARGV[1]
 begin
-    elements = File.read(file_path).split.map(&:to_i)
-rescue Errno::ENOENT
-    puts "Файл не найден по указанному пути!"
+    f = File.open("file_path", "w+")
+    array_input = []
+    f.each_line do |input_line|
+        array_input = input_line.to_i
+    end
+    puts "Файл подключен успешно!"
+rescue Errno::ENONET => error
+    puts "Обнаружена ошибка при работе с файлами: #{error}"
     exit
+ensure
+    f.close()
 end
+
+
 case method_number
 when 1
   puts "Минимальный элемент: #{min_element_finder(elements)}"
@@ -35,4 +44,3 @@ when 2
 else
   puts "Неверный номер метода. (1 - для поиска минимального элемента; 2 - для поиска номера первого положительного числа)"
 end
-

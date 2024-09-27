@@ -16,7 +16,7 @@ def first_positive_element_finder (elements)
         end
         i+=1
     end
-    return "Положительное число не найдено."
+    return nil
 end
             
 puts "Вводите элементы. (Введите 0 для остановки ввода)"
@@ -28,4 +28,3 @@ while element != 0
 end
 puts "Минимальный элемент: #{min_element_finder(elements)}"
 puts "Номер первого положительного числа: #{first_positive_element_finder(elements)}"
-

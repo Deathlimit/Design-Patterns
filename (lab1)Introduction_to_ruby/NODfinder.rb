@@ -10,7 +10,7 @@ def NOD_finder(element1, element2)
       nod = element1 + element2
       return nod
   end
-  return "Не найден максимальный нечётный непростой делитель числа"
+  return nil
 end
 
 def max_nechet_neprost_del_finder(element)

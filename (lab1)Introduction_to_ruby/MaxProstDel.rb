@@ -19,11 +19,7 @@ def max_prostoi_del(element)
       max_del=i
      end
    end
-  if (max_del!=1)
-    return max_del
-  else
-    return "Такого делителя нет"
-  end
+  return max_del
 end 
 
 number = 11
