@@ -11,6 +11,7 @@ class Student
     self.email = email
     self.git = git
 
+    validate
   end
 
 
@@ -82,7 +83,7 @@ class Student
       raise ArgumentError, "Некорректный формат Git: #{git}"
     end
   end
-
+    
   def self.phone_regex_valid?(phone)
     phone.match?(/^\+?[1-9][0-9]{7,14}$/)
   end
@@ -97,7 +98,15 @@ class Student
   end
 
 
+  def validate
+    unless git_valid?
+      raise ArgumentError, "ID: #{id} Git-репозиторий должен быть указан."
+    end
 
+    unless contact_valid?
+      raise ArgumentError, "ID: #{id} Должен быть указан хотя бы один контакт (телефон, телеграм или email)."
+    end
+  end
   
   def to_s
     "ID: #{@id},
