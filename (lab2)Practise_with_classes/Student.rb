@@ -34,12 +34,6 @@ class Student
   end
 
 
-  private
-  attr_writer :phone, :telegram, :email, :git
-
-  
-
-
   def last_name=(last_name)
     if name_regex_valid?(last_name)
       @last_name = last_name
@@ -75,6 +69,11 @@ class Student
       raise ArgumentError, "ID должен быть числом"
     end
   end
+
+
+  private
+  attr_writer :phone, :telegram, :email, :git
+
 
   def telegram=(telegram)
     if telegram.nil? || telegram.match?(/\A@[\w\d_]+\z/)
