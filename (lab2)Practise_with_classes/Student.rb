@@ -1,5 +1,6 @@
 class Student
-  attr_accessor :last_name, :first_name, :patronymic_name, :id, :phone, :telegram, :email, :git
+  attr_accessor :last_name, :first_name, :patronymic_name, :id
+  
   
   def initialize(last_name, first_name, patronymic_name, id: nil, phone: nil, telegram: nil, email: nil, git: nil)
     self.last_name = last_name
@@ -11,9 +12,32 @@ class Student
     self.email = email
     self.git = git
 
-    validate
+    validate(git, phone, telegram, email)
   end
 
+  def set_contacts(phone: nil, telegram: nil, email: nil, git: nil)
+    self.phone = phone if phone
+    self.telegram = telegram if telegram
+    self.email = email if email
+    self.git = git if git
+  end
+  
+  def to_s
+    "ID: #{@id},
+    Фамилия: #{@last_name},
+    Имя: #{@first_name},
+    Отчество: #{@patronymic_name}, 
+    Телефон: #{@phone || 'не указан'},
+    Телеграм: #{@telegram || 'не указан'}, 
+    Почта: #{@email || 'не указана'},
+    Гит: #{@git || 'не указан'}"
+  end
+
+
+  private
+  attr_writer :phone, :telegram, :email, :git
+
+  
 
 
   def last_name=(last_name)
@@ -88,34 +112,25 @@ class Student
     phone.match?(/^\+?[1-9][0-9]{7,14}$/)
   end
 
-  def git_valid?
+  def git_valid?(git)
     !git.nil?
   end
 
 
-  def contact_valid?
+  def contact_valid?(phone, telegram, email)
     !phone.nil? || !telegram.nil? || !email.nil?
   end
 
 
-  def validate
-    unless git_valid?
+  def validate(git, phone, telegram, email)
+    unless git_valid?(git)
       raise ArgumentError, "ID: #{id} Git-репозиторий должен быть указан."
     end
 
-    unless contact_valid?
+    unless contact_valid?(phone, telegram, email)
       raise ArgumentError, "ID: #{id} Должен быть указан хотя бы один контакт (телефон, телеграм или email)."
     end
   end
   
-  def to_s
-    "ID: #{@id},
-    Фамилия: #{@last_name},
-    Имя: #{@first_name},
-    Отчество: #{@patronymic_name}, 
-    Телефон: #{@phone || 'не указан'},
-    Телеграм: #{@telegram || 'не указан'}, 
-    Почта: #{@email || 'не указана'},
-    Гит: #{@git || 'не указан'}"
-  end
+
 end
