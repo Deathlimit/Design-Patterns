@@ -60,9 +60,9 @@ class Student
     if @phone
       return "Телефон: #{@phone}"
     elsif @telegram
-      "Telegram: #{@telegram}"
+      return "Telegram: #{@telegram}"
     elsif @email
-      "Email: #{@email}"
+      return "Email: #{@email}"
     else
       return nil
     end
