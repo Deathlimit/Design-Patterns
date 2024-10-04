@@ -40,6 +40,35 @@ class Student
     Гит: #{@git || 'не указан'}"
   end
 
+  def get_info
+    "#{get_last_name} #{get_initials} | Git: #{get_git || "Не указан"} | Контакт: #{get_preferred_contact || "Не указан"}"
+  end
+
+  def get_git
+    @git
+  end
+  
+  def get_last_name
+    @last_name
+  end
+  
+  def get_initials
+    "#{@first_name[0]}.#{@patronymic_name[0]}."
+  end
+
+  def get_preferred_contact
+    if @phone
+      return @phone
+    elsif @telegram
+      return @telegram
+    elsif @email
+      return @email
+    else
+      return nil
+    end
+  end
+
+
 
   def last_name=(last_name)
     if Student.name_regex_valid?(last_name)
