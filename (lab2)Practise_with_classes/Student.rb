@@ -1,5 +1,7 @@
-class Student
-  attr_reader :last_name, :first_name, :patronymic_name, :id, :phone, :telegram, :email, :git
+require_relative 'StudentBase.rb'
+
+class Student < StudentBase
+  attr_reader :last_name, :first_name, :patronymic_name, :phone, :telegram, :email
   
   
   def initialize(last_name, first_name, patronymic_name, id: nil, phone: nil, telegram: nil, email: nil, git: nil)
@@ -11,6 +13,8 @@ class Student
     self.telegram = telegram
     self.email = email
     self.git = git
+    contact = get_preferred_contact 
+    super(id, git: git, contact: contact)
   end
 
   def set_contacts(phone: nil, telegram: nil, email: nil, git: nil)
@@ -20,14 +24,7 @@ class Student
     self.git = git if git
   end
 
-  def validate
-    unless Student.git_valid?(self.git)
-      raise ArgumentError, "ID: #{id} Git-репозиторий должен быть указан."
-    end
-    unless Student.contact_valid?(self.phone, self.telegram, self.email)
-      raise ArgumentError, "ID: #{id} Должен быть указан хотя бы один контакт (телефон, телеграм или email)."
-    end
-  end
+
   
   def to_s
     "ID: #{@id},
