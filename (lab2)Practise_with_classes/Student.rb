@@ -41,7 +41,7 @@ class Student
   end
 
   def get_info
-    "#{get_last_name} #{get_initials} | Git: #{get_git || "Не указан"} | Контакт: #{get_preferred_contact || "Не указан"}"
+    "#{get_last_name} #{get_initials} | Git: #{get_git} | Контакт: #{get_preferred_contact}"
   end
 
   def get_git
@@ -58,11 +58,11 @@ class Student
 
   def get_preferred_contact
     if @phone
-      return @phone
+      return "Телефон: #{@phone}"
     elsif @telegram
-      return @telegram
+      "Telegram: #{@telegram}"
     elsif @email
-      return @email
+      "Email: #{@email}"
     else
       return nil
     end
