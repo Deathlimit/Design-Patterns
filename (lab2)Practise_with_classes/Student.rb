@@ -1,5 +1,5 @@
 class Student
-  attr_accessor :last_name, :first_name, :patronymic_name, :id
+  attr_reader :last_name, :first_name, :patronymic_name, :id, :phone, :telegram, :email, :git
   
   
   def initialize(last_name, first_name, patronymic_name, id: nil, phone: nil, telegram: nil, email: nil, git: nil)
@@ -11,8 +11,6 @@ class Student
     self.telegram = telegram
     self.email = email
     self.git = git
-
-    validate(git, phone, telegram, email)
   end
 
   def set_contacts(phone: nil, telegram: nil, email: nil, git: nil)
@@ -20,6 +18,15 @@ class Student
     self.telegram = telegram if telegram
     self.email = email if email
     self.git = git if git
+  end
+
+  def validate
+    unless Student.git_valid?(self.git)
+      raise ArgumentError, "ID: #{id} Git-репозиторий должен быть указан."
+    end
+    unless Student.contact_valid?(self.phone, self.telegram, self.email)
+      raise ArgumentError, "ID: #{id} Должен быть указан хотя бы один контакт (телефон, телеграм или email)."
+    end
   end
   
   def to_s
@@ -35,7 +42,7 @@ class Student
 
 
   def last_name=(last_name)
-    if name_regex_valid?(last_name)
+    if Student.name_regex_valid?(last_name)
       @last_name = last_name
     else
       raise ArgumentError, "Фамилия должна содержать только буквы"
@@ -43,7 +50,7 @@ class Student
   end
 
   def first_name=(first_name)
-    if name_regex_valid?(first_name)
+    if  Student.name_regex_valid?(first_name)
       @first_name = first_name
     else
       raise ArgumentError, "Имя должно содержать только буквы"
@@ -51,15 +58,11 @@ class Student
   end
 
   def patronymic_name=(patronymic_name)
-    if name_regex_valid?(patronymic_name)
+    if  Student.name_regex_valid?(patronymic_name)
       @patronymic_name = patronymic_name
     else
       raise ArgumentError, "Отчество должно содержать только буквы"
     end
-  end
-
-  def name_regex_valid?(name)
-    name.match?(/\A[А-Яа-яЁёA-Za-z]+\z/)
   end
 
   def id=(id)
@@ -70,13 +73,38 @@ class Student
     end
   end
 
+  def self.telegram_regex_valid?(telegram)
+  telegram.match?(/\A@[\w\d_]+\z/)
+  end
+      
+  def self.email_regex_valid?(email)
+  email.match?(/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i)
+  end
+      
+  def self.git_regex_valid?(git)
+  git.match?(/^[a-zA-Z][a-zA-Z0-9-]{0,38}$/)
+  end
+      
+  def self.phone_regex_valid?(phone)
+  phone.match?(/^\+?[1-9][0-9]{7,14}$/)
+  end
+  
+  def self.name_regex_valid?(name)
+  name.match?(/\A[А-Яа-яЁёA-Za-z]+\z/)
+  end
+
+  def self.git_valid?(git)
+    !git.nil?
+  end
+  
+  def self.contact_valid?(phone, telegram, email)
+    !phone.nil? || !telegram.nil? || !email.nil?
+  end
 
   private
-  attr_writer :phone, :telegram, :email, :git
-
 
   def telegram=(telegram)
-    if telegram.nil? || telegram.match?(/\A@[\w\d_]+\z/)
+    if telegram.nil? || Student.telegram_regex_valid?(telegram)
       @telegram = telegram
     else
       raise ArgumentError, "Некорректный формат Telegram: #{telegram}"
@@ -84,7 +112,7 @@ class Student
   end
 
   def email=(email)
-    if email.nil? || email.match?(/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i)
+    if email.nil? || Student.email_regex_valid?(email)
       @email = email
     else
       raise ArgumentError, "Некорректный формат email: #{email}"
@@ -100,36 +128,19 @@ class Student
   end
 
   def git=(git)
-    if git.match?(/^[a-zA-Z][a-zA-Z0-9-]{0,38}$/)
+    if git.nil? || Student.git_regex_valid?(git)
       @git = git
     else 
       raise ArgumentError, "Некорректный формат Git: #{git}"
     end
   end
-    
-  def self.phone_regex_valid?(phone)
-    phone.match?(/^\+?[1-9][0-9]{7,14}$/)
-  end
-
-  def git_valid?(git)
-    !git.nil?
-  end
 
 
-  def contact_valid?(phone, telegram, email)
-    !phone.nil? || !telegram.nil? || !email.nil?
-  end
 
 
-  def validate(git, phone, telegram, email)
-    unless git_valid?(git)
-      raise ArgumentError, "ID: #{id} Git-репозиторий должен быть указан."
-    end
 
-    unless contact_valid?(phone, telegram, email)
-      raise ArgumentError, "ID: #{id} Должен быть указан хотя бы один контакт (телефон, телеграм или email)."
-    end
-  end
+
+
   
 
 end

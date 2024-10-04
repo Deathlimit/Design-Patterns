@@ -7,11 +7,13 @@ begin
     puts student2     
     student3 = Student.new("Петрова", "Мария", "Петрович", id: 3, git: "keks", telegram: "@meow")
     puts student3
+    student4 = Student.new("Петрова", "Мария", "Петрович", id: 4, git: "keks", telegram: "@meow2")
+    puts student4
     student1.set_contacts(phone: "1234567890", email: "ivanov@example.com")
     puts "\nОбновлённая информация о студенте:"
-    puts student1.to_s
-    student1.phone = "11223344"  # Ошибка: private method `phone='
-    puts student1.to_s
+    puts student1
+    puts student4.validate
+    student1.telegram = "888888888"  # Ошибка: private method `phone='
   rescue ArgumentError => e
     puts e.message
   end
