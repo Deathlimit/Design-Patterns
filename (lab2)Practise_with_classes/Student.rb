@@ -14,7 +14,7 @@ class Student < StudentBase
     self.email = email
     self.git = git
     contact = get_preferred_contact 
-    super(id, git: git, contact: contact)
+    super(id: id, git: git, contact: contact)
   end
 
   def set_contacts(phone: nil, telegram: nil, email: nil, git: nil)
@@ -117,10 +117,6 @@ class Student < StudentBase
   
   def self.name_regex_valid?(name)
   name.match?(/\A[А-Яа-яЁёA-Za-z]+\z/)
-  end
-
-  def self.git_valid?(git)
-    !git.nil?
   end
   
   def self.contact_valid?(phone, telegram, email)
