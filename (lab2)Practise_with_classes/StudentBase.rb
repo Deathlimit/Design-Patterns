@@ -1,7 +1,7 @@
 class StudentBase
     attr_reader :id, :git, :contact
   
-    def initialize(id, git: nil, contact: nil)
+    def initialize(id: nil, git: nil, contact: nil)
       @id = id
       @git = git
       @contact = contact
@@ -16,11 +16,11 @@ class StudentBase
       end
     end
   
-    def self.git_valid?(git)
-      !git.nil? && git.match?(/^[a-zA-Z][a-zA-Z0-9-]{0,38}$/)
+    def self.has_git?(git)
+      !git.nil? 
     end
   
-    def self.contact_valid?(contact)
+    def self.has_contact?(contact)
       !contact.nil?
     end
     
