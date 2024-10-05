@@ -8,10 +8,10 @@ class StudentBase
     end
   
     def validate
-      unless StudentBase.git_valid?(@git)
+      unless StudentBase.has_git?(@git)
         raise ArgumentError, "ID: #{id} Git-репозиторий не указан."
       end
-      unless StudentBase.contact_valid?(@contact)
+      unless StudentBase.has_contact?(@contact)
         raise ArgumentError, "ID: #{id} Не указан ни один контакт."
       end
     end
