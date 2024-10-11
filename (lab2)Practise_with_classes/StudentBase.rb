@@ -21,7 +21,7 @@ class StudentBase
     end
   
     def self.has_contact?(contact)
-      !contact.nil?
+      !contact.nil? 
     end
     
   end

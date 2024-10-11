@@ -4,7 +4,7 @@ class Student < StudentBase
   attr_reader :last_name, :first_name, :patronymic_name, :phone, :telegram, :email
   
   
-  def initialize(last_name, first_name, patronymic_name, id, phone: nil, telegram: nil, email: nil, git: nil)
+  def initialize(last_name, first_name, patronymic_name, id: nil, phone: nil, telegram: nil, email: nil, git: nil)
     self.last_name = last_name
     self.first_name = first_name
     self.patronymic_name = patronymic_name
@@ -92,7 +92,7 @@ class Student < StudentBase
   end
 
   def id=(id)
-    if id.is_a?(Integer)
+    if id.nil? || id.is_a?(Integer)
       @id = id
     else
       raise ArgumentError, "ID должен быть числом"
