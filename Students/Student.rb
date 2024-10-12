@@ -9,12 +9,8 @@ class Student < StudentBase
     self.first_name = first_name
     self.patronymic_name = patronymic_name
     self.id = id
-    self.phone = phone
-    self.telegram = telegram
-    self.email = email
-    self.git = git
-    contact = get_preferred_contact 
-    super(id: id, git: git, contact: contact)
+    set_contacts (phone: phone, telegram: telegram, email: email, git: git) 
+    super(id: id, git: git)
   end
 
   def set_contacts(phone: nil, telegram: nil, email: nil, git: nil)
@@ -38,22 +34,14 @@ class Student < StudentBase
   end
 
   def get_info
-    "#{get_last_name} #{get_initials} | Git: #{get_git} | Контакт: #{get_preferred_contact}"
-  end
-
-  def get_git
-    @git
-  end
-  
-  def get_last_name
-    @last_name
+    "#{@last_name} #{get_initials} | Git: #{@git} | Контакт: #{get_contact}"
   end
   
   def get_initials
     "#{@first_name[0]}.#{@patronymic_name[0]}."
   end
 
-  def get_preferred_contact
+  def get_contact
     if @phone
       return "Телефон: #{@phone}"
     elsif @telegram

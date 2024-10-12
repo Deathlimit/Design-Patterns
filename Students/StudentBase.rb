@@ -1,17 +1,16 @@
 class StudentBase
-    attr_reader :id, :git, :contact
+    attr_reader :id, :git
   
-    def initialize(id: nil, git: nil, contact: nil)
+    def initialize(id: nil, git: nil)
       @id = id
       @git = git
-      @contact = contact
     end
   
     def validate
       unless StudentBase.has_git?(@git)
         raise ArgumentError, "ID: #{id} Git-репозиторий не указан."
       end
-      unless StudentBase.has_contact?(@contact)
+      unless StudentBase.has_contact?()
         raise ArgumentError, "ID: #{id} Не указан ни один контакт."
       end
     end
@@ -21,7 +20,7 @@ class StudentBase
     end
   
     def self.has_contact?(contact)
-      !contact.nil? 
+      !@phone.nil? || !@telegram.nil? || !@phone.nil? || !@contact.nil?
     end
     
   end

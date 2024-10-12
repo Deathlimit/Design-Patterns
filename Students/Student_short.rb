@@ -14,14 +14,14 @@ class Student_short < StudentBase
       @last_name_initials = parts[:last_name_initials]
       git = parts[:git]
       contact = parts[:contact]
-      super(git: git, contact: contact)
+      super(git: git)
     elsif args.size == 2 && args[0].is_a?(String) &&  args[1].is_a?(Integer)
       @id = args[1]
       parts = parse_info(args[0])
       @last_name_initials = parts[:last_name_initials]
       git = parts[:git]
       contact = parts[:contact]
-      super(id: id, git: git, contact: contact)
+      super(id: id, git: git)
     else
       raise ArgumentError, "Неправильные аргументы конструктора"
     end
