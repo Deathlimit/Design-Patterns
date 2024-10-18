@@ -1,5 +1,5 @@
 
-class StudentBase
+class Student_base
     attr_reader :id, :git
   
     def initialize(id: nil, git: nil)

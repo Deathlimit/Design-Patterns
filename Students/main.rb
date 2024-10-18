@@ -11,20 +11,19 @@ begin
     puts student2     
     student3 = Student.new("Петрова", "Мария", "Петрович", id: 3, git: "keks", telegram: "@meow")
     puts student3
-    student4 = Student.new("Петрова", "Мария", "Петрович", git: "keks")
+    student4 = Student.new("Петрова", "Мария", "Петрович", id: 4, git: "keks")
     puts student4
     student1.set_contacts(phone: "1234567890", email: "ivanov@example.com")
     puts "\nОбновлённая информация о студенте:"
-    puts student1
+    puts student1.contact
     info_str = student4.get_info
 
     puts info_str
-    student_short1 = Student_short.new(info_str, 10)
+    student_short1 = Student_short.new(info_str, id: 4)
     
     puts student_short1.git
     puts student_short1.contact
     student_short1.validate
-
     
   rescue ArgumentError => e
     puts e.message

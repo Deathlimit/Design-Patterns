@@ -1,35 +1,24 @@
-require_relative 'StudentBase.rb'
+require_relative 'Student_base.rb'
 require_relative 'Student.rb'
 
-class Student_short < StudentBase
+class Student_short < Student_base
   attr_reader :last_name_initials
 
-  def initialize(*args)
-    if args.size == 1 && args[0].is_a?(Student)
-      student = args[0]
-      @last_name_initials = "#{student.last_name} #{student.first_name[0]}.#{student.patronymic_name[0]}."
-      super(id: student.id, git: student.git, contact: student.get_preferred_contact)
-    elsif args.size == 1 && args[0].is_a?(String)
-      parts = parse_info(args[0])
-      @last_name_initials = parts[:last_name_initials]
-      git = parts[:git]
-      contact = parts[:contact]
-      super(git: git)
-    elsif args.size == 2 && args[0].is_a?(String) &&  args[1].is_a?(Integer)
-      @id = args[1]
-      parts = parse_info(args[0])
-      @last_name_initials = parts[:last_name_initials]
-      git = parts[:git]
-      contact = parts[:contact]
-      super(id: id, git: git)
-    else
-      raise ArgumentError, "Неправильные аргументы конструктора"
+  def initialize(input, id: nil)
+    student_to_parse = input
+    if input.is_a?(Student)
+      student_to_parse = input.get_info
     end
+    student_parse = Student_short.parse_info(student_to_parse)
+    @last_name_initials = student_parse[:last_name_initials]
+    git = student_parse[:git]
+    @contact = student_parse[:contact]  
+    super(id: id, git: git)
   end
 
   private
 
-  def parse_info(info_string)
+  def self.parse_info(info_string)
     user_parts = info_string.split('|').map(&:strip)
     if user_parts.size == 3
       last_name_initials = user_parts[0] 

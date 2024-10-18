@@ -1,6 +1,6 @@
-require_relative 'StudentBase.rb'
+require_relative 'Student_base.rb'
 
-class Student < StudentBase
+class Student < Student_base
   attr_reader :last_name, :first_name, :patronymic_name, :phone, :telegram, :email
   
   
@@ -9,7 +9,7 @@ class Student < StudentBase
     self.first_name = first_name
     self.patronymic_name = patronymic_name
     self.id = id
-    set_contacts (phone: phone, telegram: telegram, email: email, git: git) 
+    set_contacts(phone: phone, telegram: telegram, email: email, git: git) 
     super(id: id, git: git)
   end
 
@@ -19,8 +19,6 @@ class Student < StudentBase
     self.email = email if email
     self.git = git if git
   end
-
-
   
   def to_s
     "ID: #{@id},
@@ -34,26 +32,12 @@ class Student < StudentBase
   end
 
   def get_info
-    "#{@last_name} #{get_initials} | Git: #{@git} | Контакт: #{get_contact}"
+    "#{@last_name} #{get_initials} | Git: #{@git} | Контакт: #{contact}"
   end
   
   def get_initials
     "#{@first_name[0]}.#{@patronymic_name[0]}."
   end
-
-  def get_contact
-    if @phone
-      return "Телефон: #{@phone}"
-    elsif @telegram
-      return "Telegram: #{@telegram}"
-    elsif @email
-      return "Email: #{@email}"
-    else
-      return nil
-    end
-  end
-
-
 
   def last_name=(last_name)
     if Student.name_regex_valid?(last_name)
@@ -144,13 +128,5 @@ class Student < StudentBase
       raise ArgumentError, "Некорректный формат Git: #{git}"
     end
   end
-
-
-
-
-
-
-
-  
 
 end
