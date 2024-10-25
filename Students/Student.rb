@@ -8,8 +8,7 @@ class Student < Student_base
     self.last_name = last_name
     self.first_name = first_name
     self.patronymic_name = patronymic_name
-    self.id = id
-    set_contacts(phone: phone, telegram: telegram, email: email, git: git) 
+    set_contacts(phone: phone, telegram: telegram, email: email) 
     super(id: id, git: git)
   end
 
@@ -17,7 +16,6 @@ class Student < Student_base
     self.phone = phone if phone
     self.telegram = telegram if telegram
     self.email = email if email
-    self.git = git if git
   end
   
   def to_s
@@ -63,13 +61,6 @@ class Student < Student_base
     end
   end
 
-  def id=(id)
-    if id.nil? || id.is_a?(Integer)
-      @id = id
-    else
-      raise ArgumentError, "ID должен быть числом"
-    end
-  end
 
   def self.telegram_regex_valid?(telegram)
   telegram.match?(/\A@[\w\d_]+\z/)
@@ -118,14 +109,6 @@ class Student < Student_base
       @phone = phone
     else
       raise ArgumentError, "Некорректный формат телефонного номера: #{phone}"
-    end
-  end
-
-  def git=(git)
-    if git.nil? || Student.git_regex_valid?(git)
-      @git = git
-    else 
-      raise ArgumentError, "Некорректный формат Git: #{git}"
     end
   end
 
