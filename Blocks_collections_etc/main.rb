@@ -1,5 +1,5 @@
 def find_min_index(arr)
-    arr.index(arr.min)
+    arr.each_with_index.min_by { |value, index| value }[1]
 end
   
 puts "Выберите способ ввода данных:\n1. Ввести с клавиатуры\n2. Прочитать из файла"
