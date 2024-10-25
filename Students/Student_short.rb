@@ -1,22 +1,31 @@
 require_relative 'Student_base.rb'
-require_relative 'Student.rb'
 
 class Student_short < Student_base
+
   attr_reader :last_name_initials
 
-  def initialize(input, id: nil)
-    student_to_parse = input
-    if input.is_a?(Student)
-      student_to_parse = input.get_info
-    end
-    student_parse = Student_short.parse_info(student_to_parse)
-    @last_name_initials = student_parse[:last_name_initials]
-    git = student_parse[:git]
-    @contact = student_parse[:contact]  
+  private_class_method :new
+
+  def initialize(last_name_initials, git, contact, id: nil)
+    @last_name_initials = last_name_initials
+    @contact = contact  
     super(id: id, git: git)
   end
 
-  private
+
+  def self.by_string(student_info, id)
+    parse = Student_short.parse_info(student_info)
+    new(parse[:last_name_initials], parse[:git], parse[:contact], id: id)
+  end
+	
+  def self.by_student(student)
+    if student.is_a?(Student)
+	  Student_short.by_string(student.get_info, student.id) 
+    end
+  end
+
+
+	private
 
   def self.parse_info(info_string)
     user_parts = info_string.split('|').map(&:strip)
