@@ -1,3 +1,10 @@
+def count_elements_between(arr)
+    min_value = arr.min
+    first_min = arr.index(min_value)
+    last_min = arr.rindex(min_value)
+    yield(first_min, last_min)
+end
+
 def count_elements_in_range(arr, range)
     arr.count { |element| range.include?(element) }
 end
@@ -6,7 +13,9 @@ def find_min_index(arr)
     arr.each_with_index.min_by { |value, index| value }[1]
 end
   
-puts "Выберите способ ввода данных:\n1. Ввести с клавиатуры\n2. Прочитать из файла"
+puts "Выберите способ ввода данных:
+                    \n1. Ввести с клавиатуры
+                    \n2. Прочитать из файла"
 input_choice = gets.chomp
   
 case input_choice
@@ -31,7 +40,8 @@ end
   
 puts "Выберите задачу:
         \n1. Найти индекс минимального элемента
-        \n2. Найти количество элементов в заданном интервале"
+        \n2. Найти количество элементов в заданном интервале
+        \n3. Найти количество элементов между первым и последним минимальным"
 method_choice = gets.chomp
 puts
 puts arr
@@ -45,6 +55,9 @@ case method_choice
         end_num = gets.chomp.to_i
         range = start_num..end_num
         puts "Количество элементов в интервале #{range}:  #{count_elements_in_range(arr, range)}"
+    when "3"
+        elements_count = count_elements_between(arr) { |first_min, last_min| (last_min - first_min - 1) }
+        puts "Количество элементов между первым и последним минимальным значением: #{elements_count}"
     else
         puts "Некорректный выбор задачи."
     end
