@@ -1,3 +1,7 @@
+def count_elements_in_range(arr, range)
+    arr.count { |element| range.include?(element) }
+end
+
 def find_min_index(arr)
     arr.each_with_index.min_by { |value, index| value }[1]
 end
@@ -25,13 +29,22 @@ case input_choice
         exit
 end
   
-puts "Выберите задачу:\n1. Найти индекс минимального элемента"
+puts "Выберите задачу:
+        \n1. Найти индекс минимального элемента
+        \n2. Найти количество элементов в заданном интервале"
 method_choice = gets.chomp
 puts
 puts arr
 case method_choice
     when "1"
         puts "Индекс минимального элемента: #{find_min_index(arr)}"
+    when "2"
+        puts "Введите начальное значение диапазона:"
+        start_num = gets.chomp.to_i
+        puts "Введите конечное значение диапазона:"
+        end_num = gets.chomp.to_i
+        range = start_num..end_num
+        puts "Количество элементов в интервале #{range}:  #{count_elements_in_range(arr, range)}"
     else
         puts "Некорректный выбор задачи."
     end
