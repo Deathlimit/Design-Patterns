@@ -13,9 +13,9 @@ begin
     puts student3
     student4 = Student.new("Петрова", "Мария", "Петрович", id: 14, git: "keks")
     puts student4
-    student1.set_contacts(phone: "1234567890", email: "ivanov@example.com")
+    student4.set_contacts(phone: "1234567890")
     puts "\nОбновлённая информация о студенте:"
-    puts student1.contact
+    puts student4.contact
     info_str = student4.get_info
 
     puts info_str
@@ -23,8 +23,12 @@ begin
     
     puts student_short1.git
     puts student_short1.contact
-    student_short1.validate
-    
+    if student_short1.validate
+      puts "Nice"
+    else
+      puts "ne nice"
+    end
+    puts student_short1.contact
   rescue ArgumentError => e
     puts e.message
   end

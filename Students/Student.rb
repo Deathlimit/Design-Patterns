@@ -12,7 +12,7 @@ class Student < Student_base
     super(id: id, git: git)
   end
 
-  def set_contacts(phone: nil, telegram: nil, email: nil, git: nil)
+  def set_contacts(phone: nil, telegram: nil, email: nil)
     self.phone = phone if phone
     self.telegram = telegram if telegram
     self.email = email if email

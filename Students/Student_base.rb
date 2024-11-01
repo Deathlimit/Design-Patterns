@@ -22,12 +22,13 @@ class Student_base
     end
 
     def validate
-      unless Student_base.has_git?(@git)
+      unless self.has_git?
         return false
       end
-      unless Student_base.has_contact?(self.contact)
+      unless self.has_contact?
         return false
       end
+      return true
     end
 
     def id=(id)
@@ -46,11 +47,11 @@ class Student_base
       end
     end
   
-    def self.has_git?(git)
-      !git.nil? 
+    def has_git?
+      !@git.nil? 
     end
-  
-    def self.has_contact?(con)
-      !con.nil?
+
+    def has_contact?
+      !self.contact.nil?
     end 
   end
