@@ -11,8 +11,12 @@ def count_elements_between(arr)
     yield(first_min, last_min)
 end
 
-def count_elements_in_range(arr, range)
+def count_elements_in_segment(arr, range)
     arr.count { |element| range.include?(element) }
+end
+
+def count_elements_in_interval(arr, range)
+    arr.count { |element| element > range.begin && element < range.end } 
 end
 
 def find_min_index(arr)
@@ -61,7 +65,7 @@ puts "Выберите задачу:
         \n1. Найти индекс минимального элемента
         \n2. Найти количество элементов в заданном интервале
         \n3. Найти количество элементов между первым и последним минимальным
-        \n4. ???
+        \n4. Найти количество элементов в заданном отрезке
         \n5. Построить новый список, состоящий из элементов, встречающихся только в одном из этих списков и не повторяющихся в них"
 method_choice = gets.chomp
 puts
@@ -70,17 +74,22 @@ case method_choice
     when "1"
         puts "Индекс минимального элемента: #{find_min_index(arr)}"
     when "2"
-        puts "Введите начальное значение диапазона:"
+        puts "Введите начальное значение интервала:"
         start_num = gets.chomp.to_i
-        puts "Введите конечное значение диапазона:"
+        puts "Введите конечное значение интервала:"
         end_num = gets.chomp.to_i
         range = start_num..end_num
-        puts "Количество элементов в интервале #{range}:  #{count_elements_in_range(arr, range)}"
+        puts "Количество элементов в интервале #{range}:  #{count_elements_in_interval(arr, range)}"
     when "3"
         elements_count = count_elements_between(arr) { |first_min, last_min| (last_min - first_min - 1) }
         puts "Количество элементов между первым и последним минимальным значением: #{elements_count}"
     when "4"
-        puts "???"
+        puts "Введите начальное значение отрезка:"
+        start_num = gets.chomp.to_i
+        puts "Введите конечное значение отрезка:"
+        end_num = gets.chomp.to_i
+        range = start_num..end_num
+        puts "Количество элементов в отрезке #{range}:  #{count_elements_in_segment(arr, range)}"
     when "5"
         symm_diff_result = symm_diff(l1, l2)
         puts "Симметрическая разность списков: #{symm_diff_result}"
