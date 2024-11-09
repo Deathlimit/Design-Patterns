@@ -22,7 +22,7 @@ class Html_tree
     end
   end 
 
-  def dfs_root
+  def bfs_root
     queue = [@root]
     until queue.empty?
       tag = queue.shift
