@@ -40,10 +40,27 @@ class My_array
             end
         end
     return nil
-    end
   end
 
-  
+  def min_by(&block)
+    min_element = @array.first
+    @array.each do |element|
+      if block.call(element) < block.call(min_element)
+        min_element = element 
+      end
+    end
+    return min_element
+  end
+
+  def inject(initial = 0, &block)
+    accumulator = initial
+    @array.each do |element|
+        accumulator = block.call(accumulator, element)
+    end
+    return accumulator
+  end
+
+end
 require 'minitest/autorun'
 
 class My_array_test < Minitest::Test
@@ -69,5 +86,15 @@ class My_array_test < Minitest::Test
   def test_find
     assert_equal 3, @test_array.find { |x| x == 3 }
     assert_nil @test_array.find { |x| x == 4 }
+  end
+
+  def test_min_by
+    assert_equal 1, @test_array.min_by { |x| x }
+    assert_equal 3, @test_array.min_by { |x| -x }
+  end
+
+  def test_inject
+    assert_equal 6, @test_array.inject { |sum, x| sum + x }
+    assert_equal 11, @test_array.inject(5) { |sum, x| sum + x }
   end
 end
