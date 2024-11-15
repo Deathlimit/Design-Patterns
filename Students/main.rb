@@ -1,36 +1,25 @@
 require_relative 'Student.rb'
 require_relative 'Student_short.rb'
 require_relative 'Student_base.rb'
+require_relative 'Student_tree.rb'
 
 
 begin
-    student1 = Student.new("Даниилов", "Даниил", "Даниилович", email: "daniil@test.com", id: 1, phone: "+12223334444", git: "daniil-git")
-    puts student1
+  student1 = Student.new('Иванов', 'Иван', 'Иванович', birth_date: '2000-05-15', id: 1)
+  student2 = Student.new('Петров', 'Петр', 'Петрович', birth_date: '1998-10-12', id: 2)
+  student3 = Student.new('Сидоров', 'Сергей', 'Сергеевич', birth_date: '2002-03-20', id: 3)
 
-    student2 = Student.new("Петров", "Петр", "Петрович", id: 2, telegram: "@petr", git: "petr-git", phone: "+122233344")
-    puts student2     
-    student3 = Student.new("Петрова", "Мария", "Петрович", id: 3, git: "keks", telegram: "@meow")
-    puts student3
-    student4 = Student.new("Петрова", "Мария", "Петрович", id: 14, git: "keks")
-    puts student4
-    student4.set_contacts(phone: "1234567890")
-    puts "\nОбновлённая информация о студенте:"
-    puts student4.contact
-    info_str = student4.get_info
+  tree = Binary_student_tree.new
+  tree.add(student1)
+  tree.add(student2)
+  tree.add(student3)
 
-    puts info_str
-    student_short1 = Student_short.by_string(info_str, 14)
-    
-    puts student_short1.git
-    puts student_short1.contact
-    if student_short1.validate
-      puts "Nice"
-    else
-      puts "ne nice"
-    end
-    puts student_short1.contact
-  rescue ArgumentError => e
-    puts e.message
+  tree.each { |student| puts student }
+
+  puts
+  puts
+  puts
+  puts student1 > student2 ? "1" : "2"
   end
 
 

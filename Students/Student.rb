@@ -1,13 +1,17 @@
 require_relative 'Student_base.rb'
+require 'date'
 
 class Student < Student_base
-  attr_reader :last_name, :first_name, :patronymic_name, :phone, :telegram, :email
+  include Comparable
+
+  attr_reader :last_name, :first_name, :patronymic_name, :phone, :telegram, :email, :birth_date
   
   
-  def initialize(last_name, first_name, patronymic_name, id: nil, phone: nil, telegram: nil, email: nil, git: nil)
+  def initialize(last_name, first_name, patronymic_name, id: nil, phone: nil, telegram: nil, email: nil, git: nil, birth_date: nil)
     self.last_name = last_name
     self.first_name = first_name
     self.patronymic_name = patronymic_name
+    self.birth_date = birth_date
     set_contacts(phone: phone, telegram: telegram, email: email) 
     super(id: id, git: git)
   end
@@ -26,7 +30,8 @@ class Student < Student_base
     Телефон: #{@phone || 'не указан'},
     Телеграм: #{@telegram || 'не указан'}, 
     Почта: #{@email || 'не указана'},
-    Гит: #{@git || 'не указан'}"
+    Гит: #{@git || 'не указан'},
+    Дата рождения: #{@birth_date || 'не указан'}"
   end
 
   def get_info
@@ -61,6 +66,21 @@ class Student < Student_base
     end
   end
 
+  def birth_date=(birth_date)
+    if birth_date.nil? || Student.valid_date?(birth_date)
+      @birth_date = birth_date ? Date.parse(birth_date) : nil
+    else
+      raise ArgumentError, "Некорректная дата рождения: #{birth_date}"
+    end
+  end
+
+  def <=>(student)
+    self.birth_date <=> student.birth_date
+  end
+
+  def self.valid_date?(date)
+    Date.parse(date) rescue false
+  end
 
   def self.telegram_regex_valid?(telegram)
   telegram.match?(/\A@[\w\d_]+\z/)
