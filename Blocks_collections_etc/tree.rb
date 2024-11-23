@@ -31,7 +31,7 @@ class Html_tree
     end
   end
 
-  def each(type: :root_DFS, &block)
+  def each(type: :dfs_root, &block)
     self.send(type, &block)
   end
 
