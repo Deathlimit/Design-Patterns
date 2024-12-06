@@ -1,0 +1,46 @@
+[
+  {
+    "id": 4,
+    "first_name": "AAРРешетка",
+    "last_name": "ББДДаниил",
+    "patronymic_name": "Тестовиччч",
+    "birth_date": "2003-03-03",
+    "telegram": "@test3",
+    "email": "test3@gmail.com",
+    "phone": null,
+    "git": "test3"
+  },
+  {
+    "id": 3,
+    "first_name": "РРешетка",
+    "last_name": "ДДаниил",
+    "patronymic_name": "Тестовиччч",
+    "birth_date": "2003-03-03",
+    "telegram": "@test3",
+    "email": "test3@gmail.com",
+    "phone": null,
+    "git": "test3"
+  },
+  {
+    "id": 1,
+    "first_name": "Решетка",
+    "last_name": "Даниил",
+    "patronymic_name": "Тестович",
+    "birth_date": "2001-01-01",
+    "telegram": "@test",
+    "email": "test@gmail.com",
+    "phone": null,
+    "git": "test"
+  },
+  {
+    "id": 2,
+    "first_name": "Мешетка",
+    "last_name": "Жаниил",
+    "patronymic_name": "Тестовичч",
+    "birth_date": "2002-02-02",
+    "telegram": "@test2",
+    "email": "test2@gmail.com",
+    "phone": null,
+    "git": "test2"
+  }
+]
