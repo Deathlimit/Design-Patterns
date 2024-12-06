@@ -19,6 +19,13 @@ class Data_list
       @selected_ids.dup
     end
 
+    def proceed_data_table
+      datatable=[]
+      datatable << self.get_names
+      datatable.concat(self.get_data)
+      DataTable.new(datatable)
+    end
+
     def get_names
       raise NotImplementedError, 'Метод get_names должен быть реализован в наследниках'
     end
@@ -35,5 +42,8 @@ class Data_list
         raise IndexError, 'Индекс вне диапазона'
       end
     end
+
+    protected
+    attr_accessor :selected
   end
   

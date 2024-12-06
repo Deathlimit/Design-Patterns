@@ -4,7 +4,7 @@ require_relative 'Student_short.rb'
 class DataListStudentShort < Data_list
 
   def get_names
-    ['ФИО', 'Git', 'Контакт']
+    ['N', 'ФИО', 'Git', 'Контакт']
   end
 
 
@@ -17,6 +17,6 @@ class DataListStudentShort < Data_list
         student.contact               
       ]
     end
-    DataTable.new(data)
+    data
   end
 end
