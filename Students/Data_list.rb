@@ -1,9 +1,12 @@
+require './deep_dup.rb'
+
 class Data_list
+  include Deep_dup
     def initialize(elements)
       unless elements.is_a?(Array)
         raise ArgumentError, 'Данные должны быть массивом'
       end
-      @elements = elements.dup
+      @elements = elements
       @selected_ids = []
     end
   
@@ -16,7 +19,7 @@ class Data_list
   
 
     def get_selected
-      @selected_ids.dup
+      self.deep_dup(@selected_ids)
     end
 
     def proceed_data_table
@@ -42,8 +45,5 @@ class Data_list
         raise IndexError, 'Индекс вне диапазона'
       end
     end
-
-    protected
-    attr_accessor :selected
   end
   
