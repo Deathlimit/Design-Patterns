@@ -7,7 +7,7 @@ class Student < Student_base
   attr_reader :last_name, :first_name, :patronymic_name, :phone, :telegram, :email, :birth_date
   
   
-  def initialize(last_name, first_name, patronymic_name, id: nil, phone: nil, telegram: nil, email: nil, git: nil, birth_date: nil)
+  def initialize(last_name:, first_name:, patronymic_name:, id: nil, phone: nil, telegram: nil, email: nil, git: nil, birth_date: nil)
     self.last_name = last_name
     self.first_name = first_name
     self.patronymic_name = patronymic_name
@@ -34,6 +34,20 @@ class Student < Student_base
     Дата рождения: #{@birth_date || 'не указан'}"
   end
 
+  def to_hash
+    { 
+    id: self.id, 
+    first_name: self.first_name, 
+    last_name: self.last_name, 
+    patronymic_name: self.patronymic_name, 
+    birth_date: self.birth_date, 
+    telegram: self.telegram,
+    email: self.email, 
+    phone: self.phone, 
+    git: self.git 
+    }
+end
+
   def get_info
     "#{@last_name} #{get_initials} | Git: #{@git} | Контакт: #{contact}"
   end
@@ -48,6 +62,10 @@ class Student < Student_base
     else
       raise ArgumentError, "Фамилия должна содержать только буквы"
     end
+  end
+   
+  def get_full_name
+    "#{last_name} #{get_initials}"
   end
 
   def first_name=(first_name)
@@ -68,7 +86,7 @@ class Student < Student_base
 
   def birth_date=(birth_date)
     if birth_date.nil? || Student.valid_date?(birth_date)
-      @birth_date = birth_date ? Date.parse(birth_date) : nil
+      @birth_date = birth_date.is_a?(String) ? Date.parse(birth_date) : birth_date
     else
       raise ArgumentError, "Некорректная дата рождения: #{birth_date}"
     end

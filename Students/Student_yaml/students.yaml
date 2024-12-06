@@ -1,0 +1,82 @@
+---
+- :id: 1
+  :first_name: AAРРешетка
+  :last_name: AAДДаниил
+  :patronymic_name: Тестовиччч
+  :birth_date: 2003-03-03
+  :telegram: "@test3"
+  :email: test3@gmail.com
+  :phone:
+  :git: test3
+- :id: 2
+  :first_name: AAРРешетка
+  :last_name: AAДДаниил
+  :patronymic_name: Тестовиччч
+  :birth_date: 2003.03.03
+  :telegram: "@test3"
+  :email: test3@gmail.com
+  :phone:
+  :git: test3
+- :id: 3
+  :first_name: AAРРешетка
+  :last_name: AAДДаниил
+  :patronymic_name: Тестовиччч
+  :birth_date: 2003.03.03
+  :telegram: "@test3"
+  :email: test3@gmail.com
+  :phone:
+  :git: test3
+- :id: 4
+  :first_name: AAРРешетка
+  :last_name: AAДДаниил
+  :patronymic_name: Тестовиччч
+  :birth_date: 2003.03.03
+  :telegram: "@test3"
+  :email: test3@gmail.com
+  :phone:
+  :git: test3
+- :id: 5
+  :first_name: AAРРешетка
+  :last_name: AAДДаниил
+  :patronymic_name: Тестовиччч
+  :birth_date: 2003.03.03
+  :telegram: "@test3"
+  :email: test3@gmail.com
+  :phone:
+  :git: test3
+- :id: 6
+  :first_name: AAРРешетка
+  :last_name: AAДДаниил
+  :patronymic_name: Тестовиччч
+  :birth_date: 2003.03.03
+  :telegram: "@test3"
+  :email: test3@gmail.com
+  :phone:
+  :git: test4
+- :id: 7
+  :first_name: AAРРешетка
+  :last_name: AAДДаниил
+  :patronymic_name: Тестовиччч
+  :birth_date: 2003.03.03
+  :telegram: "@test3"
+  :email: test3@gmail.com
+  :phone:
+  :git: test4
+- :id: 8
+  :first_name: AAРРешетка
+  :last_name: AAДДаниил
+  :patronymic_name: Тестовиччч
+  :birth_date: 2003.03.03
+  :telegram: "@test3"
+  :email: test3@gmail.com
+  :phone:
+  :git: test4
+- :id: 9
+  :first_name: AAРРешетка
+  :last_name: AAДДаниил
+  :patronymic_name: Тестовиччч
+  :birth_date: 2003.03.03
+  :telegram: "@test3"
+  :email: test3@gmail.com
+  :phone:
+  :git: test4
