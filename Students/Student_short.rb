@@ -24,6 +24,20 @@ class Student_short < Student_base
     end
   end
 
+  def self.bydb(attributes = {})
+    last_name_initials = "#{attributes[:last_name]} #{attributes[:first_name][0]}.#{attributes[:patronymic_name][0]}." 
+    contact = nil
+    if attributes[:email]
+      contact = attributes[:email]
+    elsif attributes[:phone]
+      contact = attributes[:phone]
+    elsif attributes[:telegram]
+      contact = attributes[:telegram]
+    end
+    new(last_name_initials, attributes[:git], contact, id: nil)
+  end
+    
+
 
 	private
 

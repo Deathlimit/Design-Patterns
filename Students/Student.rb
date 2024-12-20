@@ -7,13 +7,13 @@ class Student < Student_base
   attr_reader :last_name, :first_name, :patronymic_name, :phone, :telegram, :email, :birth_date
   
   
-  def initialize(last_name:, first_name:, patronymic_name:, id: nil, phone: nil, telegram: nil, email: nil, git: nil, birth_date: nil)
-    self.last_name = last_name
-    self.first_name = first_name
-    self.patronymic_name = patronymic_name
-    self.birth_date = birth_date
-    set_contacts(phone: phone, telegram: telegram, email: email) 
-    super(id: id, git: git)
+  def initialize(attributes = {})
+    self.last_name = attributes[:last_name] 
+    self.first_name = attributes[:first_name] 
+    self.patronymic_name = attributes[:patronymic_name]
+    self.birth_date = attributes[:birth_date]
+    set_contacts(phone: attributes[:phone], telegram: attributes[:telegram], email: attributes[:email]) 
+    super(id: attributes[:id], git: attributes[:git])
   end
 
   def set_contacts(phone: nil, telegram: nil, email: nil)
@@ -56,6 +56,10 @@ end
     "#{@first_name[0]}.#{@patronymic_name[0]}."
   end
 
+  def last_name_initials
+    "#{@last_name} #{@first_name[0]}.#{@patronymic_name[0]}."
+  end
+
   def last_name=(last_name)
     if Student.name_regex_valid?(last_name)
       @last_name = last_name
@@ -86,7 +90,7 @@ end
 
   def birth_date=(birth_date)
     if birth_date.nil? || Student.valid_date?(birth_date)
-      @birth_date = birth_date.is_a?(String) ? Date.parse(birth_date) : birth_date
+      @birth_date = birth_date
     else
       raise ArgumentError, "Некорректная дата рождения: #{birth_date}"
     end
