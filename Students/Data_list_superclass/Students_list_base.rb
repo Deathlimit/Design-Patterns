@@ -11,16 +11,16 @@ class Students_list_base
     def initialize(file_path, strategy)
         @file_path = file_path
         @strategy = strategy
-        @students = read_from_file
+        @students = read(@file_path)
         
     end
   
-    def read_from_file
-        @students = @strategy.read(@file_path).map { |data| Student.new(**data) }
+    def read(file_path=@file_path)
+        @strategy.read(file_path)
     end
   
-    def write_to_file
-        @strategy.write(@file_path, @students.map(&:to_hash))
+    def write(file_path=@file_path, data=@students.map(&:to_hash))
+        @strategy.write(file_path, data)
     end
   
     def get_student_by_id(id)
@@ -39,6 +39,10 @@ class Students_list_base
     end
   
     def add_student(student)
+        if @students.any? { |s| s.git == student.git || s.contact == student.contact }
+            raise NameError, 'Студент с такимими данными уже существует'
+        end
+
         max_id = @students.map(&:id).max || 0
         student.id = max_id + 1
         @students << student
@@ -47,13 +51,16 @@ class Students_list_base
     def update_student(id, updated_student)
         index = @students.find_index { |student| student.id == id }
         raise IndexError, 'Студент с таким id не найден' unless index
+        if @students.any? { |s| s.git == updated_student.git || s.contact == updated_student.contact }
+            raise NameError, 'Студент с такимими данными уже существует'
+        end
         updated_student.id = id
         @students[index] = updated_student
     end
   
     def delete_student(id)
       @students.reject! { |student| student.id == id }
-      write_to_file
+      write(@file_path)
     end
 
     def get_student_short_count
