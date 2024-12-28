@@ -8,7 +8,7 @@ class DataListStudentShort < Data_list
   end
 
 
-  def get_data
+  def get_info
     data = @elements.map.with_index(1) do |student, index|
       [
         index,                          

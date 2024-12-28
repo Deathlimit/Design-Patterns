@@ -21,21 +21,21 @@ class Data_list
     def get_selected
       self.deep_dup(@selected_ids)
     end
-
-    def proceed_data_table
-      datatable=[]
-      datatable << self.get_names
-      datatable.concat(self.get_data)
-      DataTable.new(datatable)
-    end
-
+    
     def get_names
       raise NotImplementedError, 'Метод get_names должен быть реализован в наследниках'
     end
   
 
     def get_data
-      raise NotImplementedError, 'Метод get_data должен быть реализован в наследниках'
+      datatable=[]
+      datatable << self.get_names
+      datatable.concat(self.get_info)
+      DataTable.new(datatable)
+    end
+    
+    def get_info
+      raise NotImplementedError, 'Метод get_info должен быть реализован в наследниках'
     end
   
     private
