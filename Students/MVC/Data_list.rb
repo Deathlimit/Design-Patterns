@@ -2,25 +2,29 @@ require './deep_dup.rb'
 require_relative 'Data_table.rb'
 
 class Data_list
+
+  private attr_accessor :elements, :observers, :selected_ids, :count
+
   include Deep_dup
     def initialize(elements)
       unless elements.is_a?(Array)
         raise ArgumentError, 'Данные должны быть массивом'
       end
-      @elements = elements
-      @selected_ids = []
+      self.elements = elements
+      self.selected_ids = []
+      self.observers = []
     end
   
 
     def select(number)
       validate_index(number)
-      id = @elements[number].id 
-      @selected_ids << id unless @selected_ids.include?(id)
+      id = self.elements[number].id 
+      self.selected_ids << id unless self.selected_ids.include?(id)
     end
   
 
     def get_selected
-      self.deep_dup(@selected_ids)
+      self.deep_dup(self.selected_ids)
     end
     
     def get_names
@@ -38,11 +42,26 @@ class Data_list
     def get_info
       raise NotImplementedError, 'Метод get_info должен быть реализован в наследниках'
     end
+
+    def add_observer(observer)
+      self.observers << observer
+    end
+
+
+    def notify
+
+      return if observers.nil?
+      observers.each do |observer|
+          observer.set_table_params(self.get_names, self.count)
+          observer.set_table_data(self.get_data)
+      end
+
+    end
   
     private
 
     def validate_index(index)
-      unless index.between?(0, @elements.size - 1)
+      unless index.between?(0, self.elements.size - 1)
         raise IndexError, 'Индекс вне диапазона'
       end
     end

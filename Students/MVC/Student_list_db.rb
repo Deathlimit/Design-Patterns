@@ -1,7 +1,7 @@
 require_relative 'Student.rb'
 require_relative 'Student_short.rb'
 require_relative 'data_list_student_short.rb'
-require_relative 'DB_Client'
+require_relative 'DB_Client.rb'
 
 
 class Students_List_DB

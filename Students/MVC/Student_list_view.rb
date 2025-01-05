@@ -4,7 +4,11 @@ require './Student.rb'
 
 include Fox
 
+
+
 class Student_list_view < FXVerticalFrame
+
+  attr_accessor :controller
 
   ROWS_PER_PAGE = 5
 
@@ -27,7 +31,6 @@ class Student_list_view < FXVerticalFrame
     name_text_field = nil
     FXHorizontalFrame.new(filtering_area, opts: LAYOUT_FILL_X) do |frame|
       FXLabel.new(frame, "Фамилия и инициалы:")
-      FXTextField.new(frame, 20, opts: TEXTFIELD_NORMAL)
       name_text_field = FXTextField.new(frame, 20, opts: TEXTFIELD_NORMAL)
     end
 
@@ -114,6 +117,7 @@ class Student_list_view < FXVerticalFrame
   
   attr_accessor :table, :data, :total_pages, :current_page, :current_page_label, :prev_button, :next_button, :sort_order, :add_button, :update_button, :edit_button, :delete_button,
   :filters
+  
 
 
 
