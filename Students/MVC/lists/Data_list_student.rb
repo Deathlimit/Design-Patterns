@@ -16,8 +16,7 @@ class Data_list_student < Data_list
         student.git,  
         student.email,    
         student.telegram, 
-        student.phone,                 
-        
+        student.phone,                   
       ]
     end
     data

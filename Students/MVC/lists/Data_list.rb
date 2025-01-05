@@ -2,8 +2,7 @@ require './deep_dup.rb'
 require_relative 'Data_table.rb'
 
 class Data_list
-
-  private attr_accessor :elements, :observers, :selected_ids, :count
+  attr_accessor :elements, :selected_ids, :count, :observers
 
   include Deep_dup
     def initialize(elements)
@@ -48,15 +47,13 @@ class Data_list
     end
 
 
-    def notify
-
-      return if observers.nil?
-      observers.each do |observer|
-          observer.set_table_params(self.get_names, self.count)
-          observer.set_table_data(self.get_data)
+    def notify(data)
+      self.observers.each do |observer|
+        observer.set_table_params(data.get_names, self.count)
+        observer.set_table_data(data.get_data)
       end
-
     end
+
   
     private
 
