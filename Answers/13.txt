@@ -1,0 +1,171 @@
+Диаграмма последовательности (Sequence Diagram)
+Диаграмма последовательности — это тип диаграмм UML, который иллюстрирует взаимодействие объектов в системе в виде последовательности сообщений (вызовов методов) между ними. Она помогает визуализировать поток управления и взаимодействие между объектами в рамках конкретного сценария.
+
+Основные элементы диаграммы последовательности
+Объекты (Lifelines):
+
+Представляются вертикальными линиями с именем объекта вверху.
+
+Пример: :Client, :Server.
+
+Сообщения (Messages):
+
+Стрелки, показывающие вызовы методов или передачу данных между объектами.
+
+Пример: :Client -> :Server: request().
+
+Активация (Activation Bars):
+
+Прямоугольники на линиях жизни объектов, показывающие период активности объекта при обработке сообщения.
+
+Условия (Conditions):
+
+Показывают ветвления и условия выполнения сообщений.
+
+Пример: [условие] сообщение.
+
+Циклы (Loops):
+
+Показывают повторяющиеся сообщения.
+
+Пример: *[условие] сообщение.
+
+Тривиальный пример диаграммы последовательности
+Рассмотрим простой пример взаимодействия между клиентом и сервером.
+
+Сценарий:
+Клиент отправляет запрос на сервер.
+
+Сервер обрабатывает запрос и возвращает ответ.
+
+Диаграмма последовательности:
+Copy
++--------+       +--------+
+| :Client|       | :Server|
++--------+       +--------+
+    |                |
+    |--- request() -->|
+    |                |--- process() ---|
+    |                |<-- response() --|
+    |<-- response() --|
+    |                |
+Код:
+ruby
+Copy
+class Client
+  def initialize(server)
+    @server = server
+  end
+
+  def send_request
+    response = @server.process_request
+    puts "Received response: #{response}"
+  end
+end
+
+class Server
+  def process_request
+    # Обработка запроса
+    "Processed request"
+  end
+end
+
+server = Server.new
+client = Client.new(server)
+client.send_request
+# Output: Received response: Processed request
+Пример диаграммы последовательности для архитектурного паттерна MVC
+Рассмотрим пример взаимодействия объектов в рамках архитектурного паттерна MVC (Model-View-Controller).
+
+Сценарий:
+Пользователь взаимодействует с View (например, нажимает кнопку).
+
+View передает событие Controller.
+
+Controller обновляет Model.
+
+Model уведомляет View об изменениях.
+
+View обновляет интерфейс.
+
+Диаграмма последовательности:
+Copy
++--------+       +-----------+       +--------+       +--------+
+| :User  |       | :View     |       | :Controller |   | :Model |
++--------+       +-----------+       +--------+       +--------+
+    |                |                    |                |
+    |--- click() --->|                    |                |
+    |                |--- handle_event() ->|                |
+    |                |                    |--- update() -->|
+    |                |                    |                |--- notify() ---|
+    |                |<-- update_view() --|<-- notify() ---|
+    |<-- update() ---|                    |                |
+    |                |                    |                |
+Код:
+ruby
+Copy
+class User
+  def click(view)
+    view.handle_event
+  end
+end
+
+class View
+  def initialize(controller)
+    @controller = controller
+  end
+
+  def handle_event
+    @controller.update
+  end
+
+  def update_view(data)
+    puts "View updated with data: #{data}"
+  end
+end
+
+class Controller
+  def initialize(model, view)
+    @model = model
+    @view = view
+  end
+
+  def update
+    @model.update_data
+  end
+end
+
+class Model
+  attr_reader :data
+
+  def initialize
+    @data = "Initial data"
+    @observers = []
+  end
+
+  def add_observer(observer)
+    @observers << observer
+  end
+
+  def update_data
+    @data = "Updated data"
+    notify_observers
+  end
+
+  def notify_observers
+    @observers.each { |observer| observer.update_view(@data) }
+  end
+end
+
+model = Model.new
+view = View.new(Controller.new(model, view))
+model.add_observer(view)
+user = User.new
+user.click(view)
+# Output: View updated with data: Updated data
+Итог
+Диаграмма последовательности иллюстрирует взаимодействие объектов в виде последовательности сообщений.
+
+Тривиальный пример показывает базовое взаимодействие между клиентом и сервером.
+
+Пример с паттерном MVC демонстрирует сложное взаимодействие между компонентами системы.

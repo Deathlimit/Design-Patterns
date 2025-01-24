@@ -1,0 +1,201 @@
+Порождающие паттерны проектирования
+Порождающие паттерны проектирования решают задачи создания объектов. Они помогают сделать систему более гибкой, позволяя изменять способ создания объектов без изменения кода, который их использует.
+
+Основные порождающие паттерны
+Одиночка (Singleton):
+
+Гарантирует, что у класса будет только один экземпляр.
+
+Пример: Логгер, подключение к базе данных.
+
+Фабричный метод (Factory Method):
+
+Определяет интерфейс для создания объекта, но оставляет подклассам решение о том, какой класс инстанцировать.
+
+Пример: Создание документов в текстовом редакторе.
+
+Абстрактная фабрика (Abstract Factory):
+
+Предоставляет интерфейс для создания семейств связанных объектов.
+
+Пример: Создание мебели в одном стиле (классика, модерн).
+
+Строитель (Builder):
+
+Позволяет создавать сложные объекты пошагово.
+
+Пример: Построение HTML-документа.
+
+Прототип (Prototype):
+
+Позволяет копировать существующие объекты вместо создания новых.
+
+Пример: Клонирование графических объектов.
+
+Подробное рассмотрение двух паттернов
+1. Фабричный метод (Factory Method)
+Проблема:
+У вас есть класс Product, и вы хотите создавать объекты этого класса, но не хотите жестко привязывать код к конкретному классу.
+
+Решение:
+Создайте абстрактный класс Creator, который определяет фабричный метод для создания объектов.
+
+Диаграмма классов:
+
+Copy
++----------------+          +----------------+
+|    Creator     |          |    Product     |
++----------------+          +----------------+
+| + factory_method()        | + use()        |
++----------------+          +----------------+
+       ^                          ^
+       |                          |
++----------------+          +----------------+
+| ConcreteCreator|          | ConcreteProduct|
++----------------+          +----------------+
+| + factory_method()        | + use()        |
++----------------+          +----------------+
+Код:
+
+ruby
+Copy
+class Product
+  def use
+    raise NotImplementedError
+  end
+end
+
+class ConcreteProduct < Product
+  def use
+    puts "Using ConcreteProduct"
+  end
+end
+
+class Creator
+  def factory_method
+    raise NotImplementedError
+  end
+
+  def some_operation
+    product = factory_method
+    product.use
+  end
+end
+
+class ConcreteCreator < Creator
+  def factory_method
+    ConcreteProduct.new
+  end
+end
+
+creator = ConcreteCreator.new
+creator.some_operation # Using ConcreteProduct
+Связь с другими паттернами:
+
+Абстрактная фабрика: Фабричный метод может быть частью абстрактной фабрики.
+
+Шаблонный метод: Фабричный метод может быть использован в шаблонном методе для создания объектов.
+
+2. Строитель (Builder)
+Проблема:
+У вас есть сложный объект, который требует пошаговой инициализации множества параметров. Вы хотите упростить процесс создания такого объекта.
+
+Решение:
+Создайте класс Builder, который будет пошагово создавать объект.
+
+Диаграмма классов:
+
+Copy
++----------------+          +----------------+
+|    Director    |          |     Builder    |
++----------------+          +----------------+
+| + construct()  |<-------->| + build_partA()|
++----------------+          | + build_partB()|
+                            +----------------+
+                                   ^
+                                   |
+                            +----------------+
+                            | ConcreteBuilder|
+                            +----------------+
+                            | + build_partA()|
+                            | + build_partB()|
+                            +----------------+
+Код:
+
+ruby
+Copy
+class Product
+  attr_accessor :parts
+
+  def initialize
+    @parts = []
+  end
+
+  def list_parts
+    puts "Product parts: #{@parts.join(', ')}"
+  end
+end
+
+class Builder
+  def build_part_a
+    raise NotImplementedError
+  end
+
+  def build_part_b
+    raise NotImplementedError
+  end
+
+  def product
+    raise NotImplementedError
+  end
+end
+
+class ConcreteBuilder < Builder
+  def initialize
+    @product = Product.new
+  end
+
+  def build_part_a
+    @product.parts << "PartA"
+  end
+
+  def build_part_b
+    @product.parts << "PartB"
+  end
+
+  def product
+    @product
+  end
+end
+
+class Director
+  attr_accessor :builder
+
+  def initialize(builder)
+    @builder = builder
+  end
+
+  def construct
+    @builder.build_part_a
+    @builder.build_part_b
+  end
+end
+
+builder = ConcreteBuilder.new
+director = Director.new(builder)
+director.construct
+
+product = builder.product
+product.list_parts # Product parts: PartA, PartB
+Связь с другими паттернами:
+
+Абстрактная фабрика: Строитель фокусируется на пошаговом создании объекта, а абстрактная фабрика — на создании семейств объектов.
+
+Компоновщик: Строитель может использоваться для создания сложных композиций объектов.
+
+Итог
+Фабричный метод и Строитель — это мощные порождающие паттерны, которые помогают решать задачи создания объектов.
+
+Фабричный метод позволяет подклассам решать, какой класс инстанцировать.
+
+Строитель позволяет пошагово создавать сложные объекты.

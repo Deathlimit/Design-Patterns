@@ -1,0 +1,223 @@
+Принцип "Предпочитайте делегацию наследованию"
+Этот принцип гласит, что вместо создания сложных иерархий наследования лучше использовать делегирование — передачу части обязанностей другому объекту. Делегирование делает код более гибким, поддерживаемым и менее связанным, так как позволяет изменять поведение объекта без изменения его класса.
+
+Почему делегирование лучше наследования?
+Гибкость: Делегирование позволяет динамически изменять поведение объекта, подменяя делегата.
+
+Упрощение иерархии: Наследование может привести к сложным иерархиям классов, которые трудно поддерживать.
+
+Избежание дублирования кода: Делегирование позволяет переиспользовать код без создания подклассов.
+
+Соблюдение принципа единственной ответственности: Делегирование помогает разделить обязанности между классами.
+
+Примеры кода
+1. Наследование vs Делегирование
+Пример с наследованием:
+
+ruby
+Copy
+class Animal
+  def speak
+    puts "Animal sound"
+  end
+end
+
+class Dog < Animal
+  def speak
+    puts "Woof!"
+  end
+end
+
+dog = Dog.new
+dog.speak # Woof!
+Проблема:
+
+Если нужно добавить новое поведение (например, плавание), придется создавать подклассы или изменять существующие.
+
+Пример с делегированием:
+
+ruby
+Copy
+class Animal
+  def speak
+    puts "Animal sound"
+  end
+end
+
+class Dog
+  def initialize
+    @animal = Animal.new
+  end
+
+  def speak
+    @animal.speak
+    puts "Woof!"
+  end
+end
+
+dog = Dog.new
+dog.speak
+# Output:
+# Animal sound
+# Woof!
+Преимущество:
+
+Поведение Animal можно изменить, не меняя класс Dog.
+
+Можно легко добавить новое поведение через другие делегаты.
+
+2. Динамическое делегирование
+Пример: Класс Printer делегирует вывод текста другому объекту.
+
+ruby
+Copy
+class TextFormatter
+  def format(text)
+    "Formatted: #{text}"
+  end
+end
+
+class Printer
+  attr_accessor :formatter
+
+  def initialize(formatter)
+    @formatter = formatter
+  end
+
+  def print(text)
+    puts @formatter.format(text)
+  end
+end
+
+formatter = TextFormatter.new
+printer = Printer.new(formatter)
+printer.print("Hello, World!")
+# Output: Formatted: Hello, World!
+Преимущество:
+
+Можно легко заменить TextFormatter на другой класс с таким же интерфейсом.
+
+Когда использовать наследование, а когда делегирование?
+Наследование:
+Используйте, когда есть строгая иерархия "является" (например, Dog является Animal).
+
+Когда подкласс действительно расширяет или изменяет поведение родительского класса.
+
+Пример: Car наследует от Vehicle.
+
+Делегирование:
+Используйте, когда нужно переиспользовать код без создания иерархии.
+
+Когда объект "имеет" или "использует" другой объект (например, Printer использует TextFormatter).
+
+Пример: Car делегирует работу двигателя объекту Engine.
+
+Паттерны, иллюстрирующие делегирование
+Стратегия (Strategy)
+
+Позволяет динамически изменять поведение объекта, подменяя стратегию.
+
+Пример: Разные алгоритмы сортировки.
+
+ruby
+Copy
+class Sorter
+  attr_accessor :strategy
+
+  def initialize(strategy)
+    @strategy = strategy
+  end
+
+  def sort(data)
+    @strategy.sort(data)
+  end
+end
+
+class BubbleSort
+  def sort(data)
+    puts "Sorting using Bubble Sort"
+    data.sort
+  end
+end
+
+class QuickSort
+  def sort(data)
+    puts "Sorting using Quick Sort"
+    data.sort
+  end
+end
+
+data = [3, 1, 2]
+sorter = Sorter.new(BubbleSort.new)
+sorter.sort(data) # Sorting using Bubble Sort
+
+sorter.strategy = QuickSort.new
+sorter.sort(data) # Sorting using Quick Sort
+Декоратор (Decorator)
+
+Добавляет новое поведение объекту, не изменяя его класс.
+
+Пример: Добавление функциональности к объекту.
+
+ruby
+Copy
+class Coffee
+  def cost
+    5
+  end
+end
+
+class MilkDecorator
+  def initialize(coffee)
+    @coffee = coffee
+  end
+
+  def cost
+    @coffee.cost + 2
+  end
+end
+
+coffee = Coffee.new
+puts "Cost: #{coffee.cost}" # Cost: 5
+
+milk_coffee = MilkDecorator.new(coffee)
+puts "Cost: #{milk_coffee.cost}" # Cost: 7
+Адаптер (Adapter)
+
+Преобразует интерфейс одного класса в интерфейс, ожидаемый другим классом.
+
+Пример: Адаптация стороннего API.
+
+ruby
+Copy
+class LegacyPrinter
+  def print_text(text)
+    puts "Legacy Printer: #{text}"
+  end
+end
+
+class ModernPrinter
+  def initialize(printer)
+    @printer = printer
+  end
+
+  def print(text)
+    @printer.print_text(text)
+  end
+end
+
+legacy_printer = LegacyPrinter.new
+modern_printer = ModernPrinter.new(legacy_printer)
+modern_printer.print("Hello, World!") # Legacy Printer: Hello, World!
+Итог
+Делегирование предпочтительнее наследования, когда нужно:
+
+Избежать сложных иерархий.
+
+Сделать код более гибким и поддерживаемым.
+
+Разделить обязанности между классами.
+
+Наследование стоит использовать, когда есть четкая иерархия "является".
+
+Паттерны, такие как Стратегия, Декоратор и Адаптер, активно используют делегирование.

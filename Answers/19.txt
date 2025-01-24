@@ -1,0 +1,260 @@
+Антипаттерны и методы их исправления
+Антипаттерны — это распространённые подходы к написанию кода, которые кажутся удобными на первый взгляд, но на самом деле ухудшают качество кода, делая его менее поддерживаемым, расширяемым и понятным. Давайте рассмотрим несколько антипаттернов, их причины, примеры и способы исправления.
+
+1. Неуместная близость (Inappropriate Intimacy)
+Почему это антипаттерн?
+Классы или модули слишком тесно связаны друг с другом, нарушая принцип инкапсуляции. Это приводит к тому, что изменения в одном классе могут повлиять на другой, что усложняет поддержку и тестирование.
+
+Пример:
+ruby
+Copy
+class Order
+  attr_accessor :customer
+
+  def initialize(customer)
+    @customer = customer
+  end
+
+  def print_customer_address
+    puts @customer.address
+  end
+end
+
+class Customer
+  attr_accessor :address
+
+  def initialize(address)
+    @address = address
+  end
+end
+
+order = Order.new(Customer.new("123 Main St"))
+order.print_customer_address
+Проблема: Класс Order знает слишком много о классе Customer, что нарушает инкапсуляцию.
+
+Метод рефакторинга:
+Перемещение метода (Move Method):
+Переместите метод print_customer_address в класс Customer.
+
+ruby
+Copy
+class Order
+  attr_accessor :customer
+
+  def initialize(customer)
+    @customer = customer
+  end
+end
+
+class Customer
+  attr_accessor :address
+
+  def initialize(address)
+    @address = address
+  end
+
+  def print_address
+    puts @address
+  end
+end
+
+order = Order.new(Customer.new("123 Main St"))
+order.customer.print_address
+Паттерны, помогающие избежать:
+Принцип единственной ответственности (Single Responsibility Principle): Каждый класс должен решать только одну задачу.
+
+Закон Деметры (Law of Demeter): Объект должен взаимодействовать только с ближайшими соседями.
+
+2. Завистливые функции (Feature Envy)
+Почему это антипаттерн?
+Метод одного класса слишком часто обращается к данным другого класса, что указывает на то, что этот метод, возможно, должен находиться в другом классе.
+
+Пример:
+ruby
+Copy
+class Order
+  attr_accessor :customer
+
+  def initialize(customer)
+    @customer = customer
+  end
+
+  def calculate_discount
+    if @customer.total_purchases > 1000
+      0.1
+    else
+      0.05
+    end
+  end
+end
+
+class Customer
+  attr_accessor :total_purchases
+
+  def initialize(total_purchases)
+    @total_purchases = total_purchases
+  end
+end
+Проблема: Метод calculate_discount в классе Order слишком часто обращается к данным класса Customer.
+
+Метод рефакторинга:
+Перемещение метода (Move Method):
+Переместите метод calculate_discount в класс Customer.
+
+ruby
+Copy
+class Order
+  attr_accessor :customer
+
+  def initialize(customer)
+    @customer = customer
+  end
+
+  def discount
+    @customer.calculate_discount
+  end
+end
+
+class Customer
+  attr_accessor :total_purchases
+
+  def initialize(total_purchases)
+    @total_purchases = total_purchases
+  end
+
+  def calculate_discount
+    if @total_purchases > 1000
+      0.1
+    else
+      0.05
+    end
+  end
+end
+Паттерны, помогающие избежать:
+Принцип единственной ответственности (Single Responsibility Principle).
+
+Закон Деметры (Law of Demeter).
+
+3. Классы данных (Data Class)
+Почему это антипаттерн?
+Класс содержит только данные и не имеет поведения (методов). Это нарушает принцип инкапсуляции, так как данные и поведение должны быть связаны.
+
+Пример:
+ruby
+Copy
+class Customer
+  attr_accessor :name, :email, :address
+end
+Проблема: Класс Customer содержит только данные, но не имеет методов для работы с этими данными.
+
+Метод рефакторинга:
+Инкапсуляция поля (Encapsulate Field):
+Добавьте методы для работы с данными.
+
+ruby
+Copy
+class Customer
+  def initialize(name, email, address)
+    @name = name
+    @email = email
+    @address = address
+  end
+
+  def name
+    @name
+  end
+
+  def email
+    @email
+  end
+
+  def address
+    @address
+  end
+
+  def send_email(message)
+    # Логика отправки email
+    puts "Sending email to #{@email}: #{message}"
+  end
+end
+Паттерны, помогающие избежать:
+Инкапсуляция (Encapsulation): Данные и поведение должны быть связаны в одном классе.
+
+Принцип единственной ответственности (Single Responsibility Principle).
+
+4. Одержимость элементарными типами (Primitive Obsession)
+Почему это антипаттерн?
+Использование элементарных типов (например, строк, чисел) вместо создания специализированных классов для представления данных. Это приводит к дублированию кода и усложняет его поддержку.
+
+Пример:
+ruby
+Copy
+class Order
+  attr_accessor :customer_name, :customer_email, :customer_address
+end
+Проблема: Вместо использования класса Customer для хранения данных о клиенте, используются элементарные типы.
+
+Метод рефакторинга:
+Замена элементарного типа объектом (Replace Primitive with Object):
+Создайте класс Customer и используйте его в классе Order.
+
+ruby
+Copy
+class Customer
+  attr_accessor :name, :email, :address
+
+  def initialize(name, email, address)
+    @name = name
+    @email = email
+    @address = address
+  end
+end
+
+class Order
+  attr_accessor :customer
+
+  def initialize(customer)
+    @customer = customer
+  end
+end
+Паттерны, помогающие избежать:
+Объектно-ориентированное программирование (OOP): Использование классов для представления данных.
+
+Принцип единственной ответственности (Single Responsibility Principle).
+
+5. Ленивый класс (Lazy Class)
+Почему это антипаттерн?
+Класс, который выполняет слишком мало функций или не выполняет их вообще. Это приводит к избыточности и усложнению кода.
+
+Пример:
+ruby
+Copy
+class Logger
+  def log(message)
+    puts message
+  end
+end
+Проблема: Класс Logger выполняет слишком мало функций и может быть объединён с другим классом.
+
+Метод рефакторинга:
+Встраивание класса (Inline Class):
+Переместите метод log в другой класс.
+
+ruby
+Copy
+class Application
+  def log(message)
+    puts message
+  end
+end
+Паттерны, помогающие избежать:
+Принцип единственной ответственности (Single Responsibility Principle).
+
+KISS (Keep It Simple, Stupid): Код должен быть простым и понятным.
+
+Итог
+Неуместная близость, завистливые функции, классы данных, одержимость элементарными типами и ленивый класс — это антипаттерны, которые ухудшают качество кода.
+
+Методы рефакторинга, такие как перемещение метода, инкапсуляция поля и замена элементарного типа объектом, помогают исправить эти антипаттерны.
+
+Паттерны, такие как принцип единственной ответственности, закон Деметры и инкапсуляция, помогают избежать этих ошибок.

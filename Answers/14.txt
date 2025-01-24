@@ -1,0 +1,178 @@
+Архитектурный паттерн MVC (Model-View-Controller)
+MVC — это архитектурный паттерн, который разделяет приложение на три основных компонента:
+
+Model (Модель):
+
+Отвечает за данные и бизнес-логику.
+
+Не зависит от пользовательского интерфейса.
+
+View (Представление):
+
+Отвечает за отображение данных пользователю.
+
+Получает данные от модели и отображает их.
+
+Controller (Контроллер):
+
+Управляет взаимодействием между моделью и представлением.
+
+Обрабатывает пользовательский ввод и обновляет модель.
+
+Базовый подход
+Пользователь взаимодействует с View (например, нажимает кнопку).
+
+View передает событие Controller.
+
+Controller обновляет Model.
+
+Model уведомляет View об изменениях.
+
+View обновляет интерфейс.
+
+Паттерны проектирования, используемые в MVC
+Наблюдатель (Observer):
+
+Модель уведомляет представление об изменениях данных.
+
+Пример: Model уведомляет View об изменении данных.
+
+Стратегия (Strategy):
+
+Контроллер может использовать разные стратегии для обработки пользовательского ввода.
+
+Пример: Разные контроллеры для разных типов запросов.
+
+Компоновщик (Composite):
+
+Представление может состоять из нескольких вложенных представлений.
+
+Пример: Веб-страница, состоящая из нескольких компонентов.
+
+Фасад (Facade):
+
+Контроллер может выступать в роли фасада, упрощая взаимодействие между моделью и представлением.
+
+Пример: Контроллер скрывает сложность взаимодействия с моделью.
+
+Взаимодействие объектов в рамках операций CRUD
+Рассмотрим пример взаимодействия объектов в рамках операций CRUD (Create, Read, Update, Delete) на диаграмме последовательности.
+
+Сценарий: Создание новой записи (Create)
+Пользователь заполняет форму и нажимает кнопку "Создать".
+
+View передает данные в Controller.
+
+Controller создает новую запись в Model.
+
+Model уведомляет View об успешном создании.
+
+View обновляет интерфейс.
+
+Диаграмма последовательности:
+Copy
++--------+       +-----------+       +--------+       +--------+
+| :User  |       | :View     |       | :Controller |   | :Model |
++--------+       +-----------+       +--------+       +--------+
+    |                |                    |                |
+    |--- fill_form()>|                    |                |
+    |--- submit() -->|                    |                |
+    |                |--- handle_submit()>|                |
+    |                |                    |--- create() -->|
+    |                |                    |                |--- save() ---|
+    |                |<-- update_view() --|<-- notify() ---|
+    |<-- show_msg() -|                    |                |
+    |                |                    |                |
+Код:
+ruby
+Copy
+class User
+  def submit_form(view, data)
+    view.handle_submit(data)
+  end
+end
+
+class View
+  def initialize(controller)
+    @controller = controller
+  end
+
+  def handle_submit(data)
+    @controller.create(data)
+  end
+
+  def update_view(message)
+    puts "View updated: #{message}"
+  end
+end
+
+class Controller
+  def initialize(model, view)
+    @model = model
+    @view = view
+  end
+
+  def create(data)
+    @model.save(data)
+  end
+end
+
+class Model
+  def initialize
+    @data = []
+    @observers = []
+  end
+
+  def add_observer(observer)
+    @observers << observer
+  end
+
+  def save(data)
+    @data << data
+    notify_observers("Record created: #{data}")
+  end
+
+  def notify_observers(message)
+    @observers.each { |observer| observer.update_view(message) }
+  end
+end
+
+model = Model.new
+view = View.new(Controller.new(model, view))
+model.add_observer(view)
+user = User.new
+user.submit_form(view, "New Record")
+# Output: View updated: Record created: New Record
+Применение MVC в фреймворках
+Ruby on Rails:
+
+Один из самых популярных фреймворков, использующих MVC.
+
+Пример: ActiveRecord (Model), ActionView (View), ActionController (Controller).
+
+Django (Python):
+
+Использует паттерн MTV (Model-Template-View), который похож на MVC.
+
+Пример: Models (Model), Templates (View), Views (Controller).
+
+Spring MVC (Java):
+
+Фреймворк для создания веб-приложений на Java.
+
+Пример: @Controller, @Service, @Repository.
+
+ASP.NET MVC (C#):
+
+Фреймворк для создания веб-приложений на C#.
+
+Пример: Models, Views, Controllers.
+
+Итог
+MVC — это мощный архитектурный паттерн, который разделяет приложение на три компонента: Model, View, Controller.
+
+В реализации MVC используются паттерны проектирования, такие как Наблюдатель, Стратегия, Компоновщик и Фасад.
+
+Диаграмма последовательности иллюстрирует взаимодействие объектов в рамках операций CRUD.
+
+MVC применяется во многих популярных фреймворках, таких как Ruby on Rails, Django, Spring MVC и ASP.NET MVC.

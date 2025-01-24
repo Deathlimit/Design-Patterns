@@ -1,0 +1,171 @@
+Архитектурный паттерн MVVM (Model-View-ViewModel)
+MVVM — это архитектурный паттерн, который был разработан для упрощения разработки пользовательских интерфейсов, особенно в контексте приложений с богатым интерфейсом (например, WPF, Xamarin, Angular). Он решает проблемы, связанные с тестируемостью, поддержкой и разделением ответственности, которые возникают в MVC и MVP.
+
+Проблематика, которая привела к появлению MVVM
+1. Проблема тестируемости
+В MVC и MVP представление и контроллер/презентер часто тесно связаны, что затрудняет модульное тестирование.
+
+Логика, связанная с пользовательским интерфейсом, часто смешивается с бизнес-логикой.
+
+2. Проблема разделения ответственности
+В MVC контроллер, а в MVP презентер могут выполнять слишком много задач, что приводит к нарушению принципа единственной ответственности.
+
+Это усложняет поддержку и расширение кода.
+
+3. Проблема синхронизации данных
+В приложениях с богатым интерфейсом часто требуется синхронизация данных между представлением и моделью, что может быть сложно реализовать в MVC и MVP.
+
+Базовый подход в MVVM
+MVVM разделяет приложение на три основных компонента:
+
+Model (Модель):
+
+Отвечает за данные и бизнес-логику.
+
+Не зависит от пользовательского интерфейса.
+
+View (Представление):
+
+Отвечает за отображение данных пользователю.
+
+Пассивно и не содержит логики обработки данных.
+
+ViewModel (Модель представления):
+
+Выступает посредником между моделью и представлением.
+
+Содержит логику представления и состояние интерфейса.
+
+Обеспечивает привязку данных (data binding) между представлением и моделью.
+
+Взаимодействие объектов в рамках операций CRUD
+Рассмотрим пример взаимодействия объектов в рамках операций CRUD (Create, Read, Update, Delete) на диаграмме последовательности.
+
+Сценарий: Создание новой записи (Create)
+Пользователь заполняет форму и нажимает кнопку "Создать".
+
+View передает данные в ViewModel.
+
+ViewModel создает новую запись в Model.
+
+Model уведомляет ViewModel об успешном создании.
+
+ViewModel обновляет View через привязку данных.
+
+Диаграмма последовательности:
+Copy
++--------+       +-----------+       +-----------+       +--------+
+| :User  |       | :View     |       | :ViewModel|       | :Model |
++--------+       +-----------+       +-----------+       +--------+
+    |                |                    |                |
+    |--- fill_form()>|                    |                |
+    |--- submit() -->|                    |                |
+    |                |--- handle_submit()>|                |
+    |                |                    |--- create() -->|
+    |                |                    |                |--- save() ---|
+    |                |<-- update_view() --|<-- notify() ---|
+    |<-- show_msg() -|                    |                |
+    |                |                    |                |
+Код:
+ruby
+Copy
+class User
+  def submit_form(view, data)
+    view.handle_submit(data)
+  end
+end
+
+class View
+  def initialize(view_model)
+    @view_model = view_model
+  end
+
+  def handle_submit(data)
+    @view_model.create(data)
+  end
+
+  def update_view(message)
+    puts "View updated: #{message}"
+  end
+end
+
+class ViewModel
+  attr_accessor :model
+
+  def initialize(model)
+    @model = model
+  end
+
+  def create(data)
+    @model.save(data)
+  end
+
+  def notify(message)
+    update_view(message)
+  end
+
+  def update_view(message)
+    puts "ViewModel updated: #{message}"
+  end
+end
+
+class Model
+  def initialize
+    @data = []
+    @observers = []
+  end
+
+  def add_observer(observer)
+    @observers << observer
+  end
+
+  def save(data)
+    @data << data
+    notify_observers("Record created: #{data}")
+  end
+
+  def notify_observers(message)
+    @observers.each { |observer| observer.notify(message) }
+  end
+end
+
+model = Model.new
+view_model = ViewModel.new(model)
+view = View.new(view_model)
+model.add_observer(view_model)
+user = User.new
+user.submit_form(view, "New Record")
+# Output: ViewModel updated: Record created: New Record
+Применение MVVM в фреймворках
+WPF (Windows Presentation Foundation):
+
+MVVM широко используется в разработке настольных приложений на C#.
+
+Пример: Привязка данных (data binding) между View и ViewModel.
+
+Xamarin:
+
+MVVM используется для разработки мобильных приложений на C#.
+
+Пример: Разделение логики и интерфейса для упрощения тестирования и поддержки.
+
+Angular:
+
+MVVM используется для разработки веб-приложений на TypeScript.
+
+Пример: Привязка данных между компонентами и сервисами.
+
+Knockout.js:
+
+MVVM используется для разработки веб-приложений на JavaScript.
+
+Пример: Привязка данных между View и ViewModel.
+
+Итог
+MVVM — это архитектурный паттерн, который решает проблемы тестируемости, разделения ответственности и синхронизации данных, присущие MVC и MVP.
+
+В MVVM ViewModel выступает посредником между Model и View, обеспечивая привязку данных и упрощая тестирование и поддержку кода.
+
+Диаграмма последовательности иллюстрирует взаимодействие объектов в рамках операций CRUD.
+
+MVVM применяется во многих популярных фреймворках, таких как WPF, Xamarin, Angular и Knockout.js.

@@ -1,0 +1,283 @@
+Антипаттерны и их взаимосвязь
+Антипаттерны — это распространённые подходы к написанию кода, которые кажутся удобными на первый взгляд, но на самом деле ухудшают качество кода, делая его менее поддерживаемым, расширяемым и понятным. Давайте рассмотрим несколько антипаттернов, их причины, примеры и способы исправления.
+
+1. Стрела дробью (Arrow Anti-Pattern)
+Почему это антипаттерн?
+Код с глубокой вложенностью условных операторов и циклов становится трудно читать и поддерживать. Это нарушает принцип линейной читаемости кода.
+
+Пример:
+ruby
+Copy
+def process_order(order)
+  if order.valid?
+    if order.items.any?
+      order.items.each do |item|
+        if item.available?
+          if item.price > 0
+            # Логика обработки заказа
+          else
+            raise "Invalid price"
+          end
+        else
+          raise "Item not available"
+        end
+      end
+    else
+      raise "Order is empty"
+    end
+  else
+    raise "Invalid order"
+  end
+end
+Проблема: Глубокая вложенность условных операторов делает код трудночитаемым.
+
+Метод рефакторинга:
+Извлечение метода (Extract Method):
+Разбейте код на несколько более мелких методов.
+
+ruby
+Copy
+def process_order(order)
+  validate_order(order)
+  process_items(order.items)
+end
+
+def validate_order(order)
+  raise "Invalid order" unless order.valid?
+  raise "Order is empty" if order.items.empty?
+end
+
+def process_items(items)
+  items.each do |item|
+    validate_item(item)
+    # Логика обработки заказа
+  end
+end
+
+def validate_item(item)
+  raise "Item not available" unless item.available?
+  raise "Invalid price" if item.price <= 0
+end
+Паттерны, помогающие избежать:
+KISS (Keep It Simple, Stupid): Код должен быть простым и понятным.
+
+Принцип единственной ответственности (Single Responsibility Principle).
+
+2. Расходящиеся модификации (Divergent Change)
+Почему это антипаттерн?
+Класс изменяется по разным причинам, что нарушает принцип единственной ответственности. Это приводит к тому, что изменения в одной части системы могут повлиять на другие части.
+
+Пример:
+ruby
+Copy
+class Order
+  def process_order(order)
+    # Логика обработки заказа
+  end
+
+  def generate_report(order)
+    # Логика генерации отчета
+  end
+
+  def send_email(customer)
+    # Логика отправки email
+  end
+end
+Проблема: Класс Order изменяется по разным причинам (обработка заказа, генерация отчета, отправка email).
+
+Метод рефакторинга:
+Разделение класса (Extract Class):
+Разделите класс на несколько более мелких классов.
+
+ruby
+Copy
+class OrderProcessor
+  def process(order)
+    # Логика обработки заказа
+  end
+end
+
+class ReportGenerator
+  def generate(order)
+    # Логика генерации отчета
+  end
+end
+
+class EmailSender
+  def send(customer)
+    # Логика отправки email
+  end
+end
+Паттерны, помогающие избежать:
+Принцип единственной ответственности (Single Responsibility Principle).
+
+Разделение обязанностей (Separation of Concerns).
+
+3. Посредник (Middle Man)
+Почему это антипаттерн?
+Класс, который выполняет только передачу вызовов другому классу, не добавляя никакой ценности. Это приводит к избыточности и усложнению кода.
+
+Пример:
+ruby
+Copy
+class Order
+  def initialize(customer)
+    @customer = customer
+  end
+
+  def send_email(message)
+    @customer.send_email(message)
+  end
+end
+
+class Customer
+  def send_email(message)
+    # Логика отправки email
+  end
+end
+Проблема: Класс Order выступает посредником между клиентом и классом Customer.
+
+Метод рефакторинга:
+Удаление посредника (Remove Middle Man):
+Удалите класс-посредник и вызывайте методы напрямую.
+
+ruby
+Copy
+class Order
+  def initialize(customer)
+    @customer = customer
+  end
+end
+
+class Customer
+  def send_email(message)
+    # Логика отправки email
+  end
+end
+
+order = Order.new(Customer.new)
+order.customer.send_email("Order processed")
+Паттерны, помогающие избежать:
+Принцип единственной ответственности (Single Responsibility Principle).
+
+Закон Деметры (Law of Demeter).
+
+4. Теоретическая общность (Speculative Generality)
+Почему это антипаттерн?
+Добавление функциональности, которая не используется в текущей системе, но может понадобиться в будущем. Это приводит к усложнению кода и увеличению времени разработки.
+
+Пример:
+ruby
+Copy
+class Order
+  def process(order)
+    # Логика обработки заказа
+  end
+
+  def cancel(order)
+    # Логика отмены заказа
+  end
+
+  def refund(order)
+    # Логика возврата средств (не используется)
+  end
+end
+Проблема: Метод refund добавлен "на всякий случай", но не используется.
+
+Метод рефакторинга:
+Удаление неиспользуемого кода (Remove Unused Code):
+Удалите неиспользуемые методы и классы.
+
+ruby
+Copy
+class Order
+  def process(order)
+    # Логика обработки заказа
+  end
+
+  def cancel(order)
+    # Логика отмены заказа
+  end
+end
+Паттерны, помогающие избежать:
+YAGNI (You Ain't Gonna Need It): Не добавляйте функциональность, которая не нужна прямо сейчас.
+
+KISS (Keep It Simple, Stupid): Код должен быть простым и понятным.
+
+5. Параллельные иерархии наследования (Parallel Inheritance Hierarchies)
+Почему это антипаттерн?
+Создание параллельных иерархий наследования, где изменения в одной иерархии требуют изменений в другой. Это приводит к дублированию кода и усложнению поддержки.
+
+Пример:
+ruby
+Copy
+class Vehicle
+  # Общая логика для транспортных средств
+end
+
+class Car < Vehicle
+  # Логика для автомобилей
+end
+
+class Truck < Vehicle
+  # Логика для грузовиков
+end
+
+class VehicleReport
+  # Общая логика для отчетов
+end
+
+class CarReport < VehicleReport
+  # Логика для отчетов по автомобилям
+end
+
+class TruckReport < VehicleReport
+  # Логика для отчетов по грузовикам
+end
+Проблема: Изменения в иерархии Vehicle требуют изменений в иерархии VehicleReport.
+
+Метод рефакторинга:
+Замена наследования делегированием (Replace Inheritance with Delegation):
+Используйте делегирование вместо наследования.
+
+ruby
+Copy
+class Vehicle
+  # Общая логика для транспортных средств
+end
+
+class Car < Vehicle
+  # Логика для автомобилей
+end
+
+class Truck < Vehicle
+  # Логика для грузовиков
+end
+
+class VehicleReport
+  def initialize(vehicle)
+    @vehicle = vehicle
+  end
+
+  def generate
+    # Логика генерации отчета
+  end
+end
+Паттерны, помогающие избежать:
+Принцип подстановки Барбары Лисков (Liskov Substitution Principle).
+
+Композиция вместо наследования (Composition over Inheritance).
+
+Взаимосвязь антипаттернов
+Стрела дробью и расходящиеся модификации часто возникают из-за нарушения принципа единственной ответственности.
+
+Посредник и параллельные иерархии наследования связаны с избыточностью и дублированием кода.
+
+Теоретическая общность может привести к расходящимся модификациям, так как неиспользуемый код может потребовать изменений в будущем.
+
+Итог
+Стрела дробью, расходящиеся модификации, посредник, теоретическая общность и параллельные иерархии наследования — это антипаттерны, которые ухудшают качество кода.
+
+Методы рефакторинга, такие как извлечение метода, разделение класса, удаление посредника и замена наследования делегированием, помогают исправить эти антипаттерны.
+
+Паттерны, такие как принцип единственной ответственности, KISS, YAGNI и композиция вместо наследования, помогают избежать этих ошибок.

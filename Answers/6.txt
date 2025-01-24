@@ -1,0 +1,277 @@
+ООП структура Ruby
+Ruby — это полностью объектно-ориентированный язык программирования. В Ruby всё является объектом, включая примитивные типы данных (числа, строки) и даже классы. Давайте разберем основные элементы ООП в Ruby.
+
+1. Классы и объекты
+Класс — это шаблон для создания объектов. Он определяет свойства (атрибуты) и поведение (методы) объектов.
+
+Объект — это экземпляр класса.
+
+Пример:
+ruby
+Copy
+class Dog
+  attr_accessor :name, :age
+
+  def initialize(name, age)
+    @name = name
+    @age = age
+  end
+
+  def bark
+    puts "Woof!"
+  end
+end
+
+dog = Dog.new("Buddy", 3)
+dog.bark # Woof!
+2. Наследование
+Ruby поддерживает одиночное наследование (класс может наследовать только от одного родительского класса). Наследование позволяет создавать иерархии классов и переиспользовать код.
+
+Пример:
+ruby
+Copy
+class Animal
+  def speak
+    puts "Animal sound"
+  end
+end
+
+class Dog < Animal
+  def speak
+    puts "Woof!"
+  end
+end
+
+dog = Dog.new
+dog.speak # Woof!
+3. Модули и примеси (Mixins)
+Модули в Ruby используются для:
+
+Группировки методов (как пространства имен).
+
+Добавления функциональности в классы через примеси (ключевое слово include).
+
+Пример:
+ruby
+Copy
+module Swimmable
+  def swim
+    puts "Swimming"
+  end
+end
+
+class Dog
+  include Swimmable
+end
+
+dog = Dog.new
+dog.swim # Swimming
+4. Инкапсуляция
+Инкапсуляция в Ruby реализуется через модификаторы доступа:
+
+public — методы доступны извне (по умолчанию).
+
+private — методы доступны только внутри класса.
+
+protected — методы доступны внутри класса и его подклассов.
+
+Пример:
+ruby
+Copy
+class BankAccount
+  def initialize(balance)
+    @balance = balance
+  end
+
+  def deposit(amount)
+    @balance += amount
+    log_transaction
+  end
+
+  private
+
+  def log_transaction
+    puts "Transaction logged"
+  end
+end
+
+account = BankAccount.new(100)
+account.deposit(50) # Transaction logged
+# account.log_transaction # Ошибка: private метод недоступен
+5. Полиморфизм
+Полиморфизм в Ruby позволяет объектам разных классов использовать одинаковые методы, но с разной реализацией. Это достигается через наследование и переопределение методов.
+
+Пример:
+ruby
+Copy
+class Bird
+  def fly
+    puts "Flying"
+  end
+end
+
+class Penguin < Bird
+  def fly
+    puts "I can't fly, but I can swim!"
+  end
+end
+
+birds = [Bird.new, Penguin.new]
+birds.each(&:fly)
+# Output:
+# Flying
+# I can't fly, but I can swim!
+6. Абстракция
+Абстракция в Ruby позволяет скрывать сложность, предоставляя только необходимый интерфейс для взаимодействия с объектом.
+
+Пример:
+ruby
+Copy
+class Car
+  def start_engine
+    check_fuel
+    ignite_spark_plug
+    puts "Engine started"
+  end
+
+  private
+
+  def check_fuel
+    puts "Checking fuel level"
+  end
+
+  def ignite_spark_plug
+    puts "Igniting spark plug"
+  end
+end
+
+car = Car.new
+car.start_engine
+# Output:
+# Checking fuel level
+# Igniting spark plug
+# Engine started
+Методы, которые принято переопределять
+В Ruby есть несколько методов, которые часто переопределяют в пользовательских классах. Эти методы определены в базовом классе Object, от которого наследуются все классы.
+
+1. initialize
+Метод, который вызывается при создании нового объекта. Используется для инициализации состояния объекта.
+
+Пример:
+ruby
+Copy
+class Person
+  def initialize(name, age)
+    @name = name
+    @age = age
+  end
+end
+
+person = Person.new("Alice", 30)
+2. to_s
+Метод, который возвращает строковое представление объекта. По умолчанию возвращает имя класса и идентификатор объекта.
+
+Пример:
+ruby
+Copy
+class Person
+  def initialize(name, age)
+    @name = name
+    @age = age
+  end
+
+  def to_s
+    "Name: #{@name}, Age: #{@age}"
+  end
+end
+
+person = Person.new("Alice", 30)
+puts person # Name: Alice, Age: 30
+3. inspect
+Метод, который возвращает строку, удобную для отладки. По умолчанию возвращает информацию о классе и атрибутах объекта.
+
+Пример:
+ruby
+Copy
+class Person
+  def initialize(name, age)
+    @name = name
+    @age = age
+  end
+
+  def inspect
+    "Person(name: #{@name}, age: #{@age})"
+  end
+end
+
+person = Person.new("Alice", 30)
+puts person.inspect # Person(name: Alice, age: 30)
+4. == (и eql?)
+Метод, который определяет, равны ли два объекта. По умолчанию сравнивает идентификаторы объектов.
+
+Пример:
+ruby
+Copy
+class Person
+  attr_accessor :name, :age
+
+  def initialize(name, age)
+    @name = name
+    @age = age
+  end
+
+  def ==(other)
+    @name == other.name && @age == other.age
+  end
+end
+
+person1 = Person.new("Alice", 30)
+person2 = Person.new("Alice", 30)
+puts person1 == person2 # true
+5. <=> (для включения в Comparable)
+Метод, который используется для сравнения объектов. Возвращает -1, 0 или 1 в зависимости от того, меньше, равен или больше текущий объект другого объекта.
+
+Пример:
+ruby
+Copy
+class Person
+  include Comparable
+  attr_accessor :age
+
+  def initialize(age)
+    @age = age
+  end
+
+  def <=>(other)
+    @age <=> other.age
+  end
+end
+
+person1 = Person.new(30)
+person2 = Person.new(25)
+puts person1 > person2 # true
+6. method_missing
+Метод, который вызывается, когда объект получает сообщение о неизвестном методе. Полезен для реализации динамического поведения.
+
+Пример:
+ruby
+Copy
+class Person
+  def method_missing(name, *args)
+    if name.to_s.start_with?("say_")
+      puts "Saying: #{name.to_s.sub('say_', '')}"
+    else
+      super
+    end
+  end
+end
+
+person = Person.new
+person.say_hello # Saying: hello
+# person.unknown_method # Ошибка: метод не найден
+Итог
+Ruby — полностью объектно-ориентированный язык, где всё является объектом.
+
+Основные элементы ООП: классы, объекты, наследование, модули, инкапсуляция, полиморфизм и абстракция.
+
+Часто переопределяемые методы: initialize, to_s, inspect, ==, <=>, method_missing.

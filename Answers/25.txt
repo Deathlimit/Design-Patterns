@@ -1,0 +1,279 @@
+Принцип разделения интерфейсов (Interface Segregation Principle, ISP)
+Принцип разделения интерфейсов — это один из пяти принципов SOLID. Он гласит, что клиенты не должны зависеть от интерфейсов, которые они не используют. Другими словами, интерфейсы должны быть узкоспециализированными, а не "толстыми", чтобы клиенты могли реализовывать только те методы, которые им действительно нужны.
+
+Примеры антипаттернов, нарушающих ISP
+1. "Толстый" интерфейс
+Проблема: Интерфейс содержит слишком много методов, что вынуждает клиентов реализовывать методы, которые им не нужны.
+
+ruby
+Copy
+module Worker
+  def work
+    raise NotImplementedError
+  end
+
+  def eat
+    raise NotImplementedError
+  end
+
+  def sleep
+    raise NotImplementedError
+  end
+end
+
+class HumanWorker
+  include Worker
+
+  def work
+    puts "Working"
+  end
+
+  def eat
+    puts "Eating"
+  end
+
+  def sleep
+    puts "Sleeping"
+  end
+end
+
+class RobotWorker
+  include Worker
+
+  def work
+    puts "Working"
+  end
+
+  def eat
+    raise "Robots don't eat"
+  end
+
+  def sleep
+    raise "Robots don't sleep"
+  end
+end
+Нарушение ISP: Класс RobotWorker вынужден реализовывать методы eat и sleep, которые ему не нужны.
+
+2. Зависимость от неиспользуемых методов
+Проблема: Клиент зависит от интерфейса, который содержит методы, не используемые клиентом.
+
+ruby
+Copy
+class Printer
+  def print(document)
+    puts "Printing: #{document}"
+  end
+
+  def scan(document)
+    puts "Scanning: #{document}"
+  end
+
+  def fax(document)
+    puts "Faxing: #{document}"
+  end
+end
+
+class SimplePrinter
+  def initialize(printer)
+    @printer = printer
+  end
+
+  def print(document)
+    @printer.print(document)
+  end
+end
+Нарушение ISP: Класс SimplePrinter зависит от интерфейса Printer, который содержит методы scan и fax, не используемые SimplePrinter.
+
+Примеры паттернов, реализующих ISP
+1. Разделение интерфейсов
+Решение: Разделите "толстый" интерфейс на несколько узкоспециализированных интерфейсов.
+
+ruby
+Copy
+module Workable
+  def work
+    raise NotImplementedError
+  end
+end
+
+module Eatable
+  def eat
+    raise NotImplementedError
+  end
+end
+
+module Sleepable
+  def sleep
+    raise NotImplementedError
+  end
+end
+
+class HumanWorker
+  include Workable
+  include Eatable
+  include Sleepable
+
+  def work
+    puts "Working"
+  end
+
+  def eat
+    puts "Eating"
+  end
+
+  def sleep
+    puts "Sleeping"
+  end
+end
+
+class RobotWorker
+  include Workable
+
+  def work
+    puts "Working"
+  end
+end
+Соблюдение ISP: Класс RobotWorker реализует только те интерфейсы, которые ему нужны.
+
+2. Использование адаптеров
+Решение: Используйте адаптеры для разделения интерфейсов и уменьшения зависимости клиентов от неиспользуемых методов.
+
+ruby
+Copy
+class Printer
+  def print(document)
+    puts "Printing: #{document}"
+  end
+end
+
+class Scanner
+  def scan(document)
+    puts "Scanning: #{document}"
+  end
+end
+
+class FaxMachine
+  def fax(document)
+    puts "Faxing: #{document}"
+  end
+end
+
+class SimplePrinter
+  def initialize(printer)
+    @printer = printer
+  end
+
+  def print(document)
+    @printer.print(document)
+  end
+end
+Соблюдение ISP: Класс SimplePrinter зависит только от интерфейса Printer, который содержит только нужные методы.
+
+Работающие примеры
+Пример 1: Разделение интерфейсов
+ruby
+Copy
+module Workable
+  def work
+    raise NotImplementedError
+  end
+end
+
+module Eatable
+  def eat
+    raise NotImplementedError
+  end
+end
+
+module Sleepable
+  def sleep
+    raise NotImplementedError
+  end
+end
+
+class HumanWorker
+  include Workable
+  include Eatable
+  include Sleepable
+
+  def work
+    puts "Working"
+  end
+
+  def eat
+    puts "Eating"
+  end
+
+  def sleep
+    puts "Sleeping"
+  end
+end
+
+class RobotWorker
+  include Workable
+
+  def work
+    puts "Working"
+  end
+end
+
+human = HumanWorker.new
+human.work
+human.eat
+human.sleep
+
+robot = RobotWorker.new
+robot.work
+Вывод:
+
+Copy
+Working
+Eating
+Sleeping
+Working
+Пример 2: Использование адаптеров
+ruby
+Copy
+class Printer
+  def print(document)
+    puts "Printing: #{document}"
+  end
+end
+
+class Scanner
+  def scan(document)
+    puts "Scanning: #{document}"
+  end
+end
+
+class FaxMachine
+  def fax(document)
+    puts "Faxing: #{document}"
+  end
+end
+
+class SimplePrinter
+  def initialize(printer)
+    @printer = printer
+  end
+
+  def print(document)
+    @printer.print(document)
+  end
+end
+
+printer = Printer.new
+simple_printer = SimplePrinter.new(printer)
+simple_printer.print("Document")
+Вывод:
+
+Copy
+Printing: Document
+Итог
+Принцип разделения интерфейсов (ISP) требует, чтобы клиенты не зависели от интерфейсов, которые они не используют.
+
+Антипаттерны, нарушающие ISP, включают "толстые" интерфейсы и зависимость от неиспользуемых методов.
+
+Паттерны, реализующие ISP, включают разделение интерфейсов и использование адаптеров.
+
+Соблюдение ISP делает код более гибким и поддерживаемым.

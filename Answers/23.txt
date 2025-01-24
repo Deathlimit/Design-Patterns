@@ -1,0 +1,201 @@
+Принцип открытости-закрытости (Open-Closed Principle, OCP)
+Принцип открытости-закрытости — это один из пяти принципов SOLID. Он гласит, что программные сущности (классы, модули, функции и т.д.) должны быть открыты для расширения, но закрыты для модификации. Это означает, что поведение сущности можно изменять, не изменяя её исходный код.
+
+Примеры антипаттернов, нарушающих OCP
+1. Класс с жестко закодированной логикой
+Проблема: Класс содержит жестко закодированную логику, которая требует изменений при добавлении новой функциональности.
+
+ruby
+Copy
+class ReportGenerator
+  def generate(report_type)
+    if report_type == :pdf
+      generate_pdf
+    elsif report_type == :csv
+      generate_csv
+    else
+      raise "Unknown report type"
+    end
+  end
+
+  private
+
+  def generate_pdf
+    puts "Generating PDF report"
+  end
+
+  def generate_csv
+    puts "Generating CSV report"
+  end
+end
+Нарушение OCP: При добавлении нового типа отчета (например, Excel) нужно изменять класс ReportGenerator.
+
+2. Метод с условной логикой
+Проблема: Метод содержит условную логику, которая требует изменений при добавлении новой функциональности.
+
+ruby
+Copy
+def calculate_discount(customer)
+  if customer.total_purchases > 1000
+    0.1
+  elsif customer.total_purchases > 500
+    0.05
+  else
+    0
+  end
+end
+Нарушение OCP: При добавлении новой скидки нужно изменять метод calculate_discount.
+
+Примеры паттернов, реализующих OCP
+1. Использование полиморфизма
+Решение: Используйте полиморфизм для расширения функциональности без изменения существующего кода.
+
+ruby
+Copy
+class ReportGenerator
+  def generate(report)
+    report.generate
+  end
+end
+
+class PdfReport
+  def generate
+    puts "Generating PDF report"
+  end
+end
+
+class CsvReport
+  def generate
+    puts "Generating CSV report"
+  end
+end
+
+class ExcelReport
+  def generate
+    puts "Generating Excel report"
+  end
+end
+
+generator = ReportGenerator.new
+generator.generate(PdfReport.new)
+generator.generate(CsvReport.new)
+generator.generate(ExcelReport.new)
+Соблюдение OCP: Новые типы отчетов можно добавлять, не изменяя класс ReportGenerator.
+
+2. Использование стратегии
+Решение: Используйте паттерн "Стратегия" для изменения поведения объекта во время выполнения.
+
+ruby
+Copy
+class DiscountCalculator
+  def initialize(strategy)
+    @strategy = strategy
+  end
+
+  def calculate(customer)
+    @strategy.calculate(customer)
+  end
+end
+
+class RegularCustomerDiscount
+  def calculate(customer)
+    customer.total_purchases > 1000 ? 0.1 : 0.05
+  end
+end
+
+class VIPCustomerDiscount
+  def calculate(customer)
+    customer.total_purchases > 2000 ? 0.2 : 0.1
+  end
+end
+
+customer = { total_purchases: 1500 }
+calculator = DiscountCalculator.new(RegularCustomerDiscount.new)
+puts calculator.calculate(customer) # 0.1
+
+calculator = DiscountCalculator.new(VIPCustomerDiscount.new)
+puts calculator.calculate(customer) # 0.1
+Соблюдение OCP: Новые стратегии можно добавлять, не изменяя класс DiscountCalculator.
+
+Работающие примеры
+Пример 1: Использование полиморфизма
+ruby
+Copy
+class ReportGenerator
+  def generate(report)
+    report.generate
+  end
+end
+
+class PdfReport
+  def generate
+    puts "Generating PDF report"
+  end
+end
+
+class CsvReport
+  def generate
+    puts "Generating CSV report"
+  end
+end
+
+class ExcelReport
+  def generate
+    puts "Generating Excel report"
+  end
+end
+
+generator = ReportGenerator.new
+generator.generate(PdfReport.new)
+generator.generate(CsvReport.new)
+generator.generate(ExcelReport.new)
+Вывод:
+
+Copy
+Generating PDF report
+Generating CSV report
+Generating Excel report
+Пример 2: Использование стратегии
+ruby
+Copy
+class DiscountCalculator
+  def initialize(strategy)
+    @strategy = strategy
+  end
+
+  def calculate(customer)
+    @strategy.calculate(customer)
+  end
+end
+
+class RegularCustomerDiscount
+  def calculate(customer)
+    customer[:total_purchases] > 1000 ? 0.1 : 0.05
+  end
+end
+
+class VIPCustomerDiscount
+  def calculate(customer)
+    customer[:total_purchases] > 2000 ? 0.2 : 0.1
+  end
+end
+
+customer = { total_purchases: 1500 }
+calculator = DiscountCalculator.new(RegularCustomerDiscount.new)
+puts calculator.calculate(customer) # 0.1
+
+calculator = DiscountCalculator.new(VIPCustomerDiscount.new)
+puts calculator.calculate(customer) # 0.1
+Вывод:
+
+Copy
+0.1
+0.1
+Итог
+Принцип открытости-закрытости (OCP) требует, чтобы программные сущности были открыты для расширения, но закрыты для модификации.
+
+Антипаттерны, нарушающие OCP, включают классы и методы с жестко закодированной логикой.
+
+Паттерны, реализующие OCP, включают использование полиморфизма и стратегии.
+
+Соблюдение OCP делает код более гибким и расширяемым.

@@ -1,0 +1,195 @@
+Принцип единой ответственности (Single Responsibility Principle, SRP)
+Принцип единой ответственности — это один из пяти принципов SOLID. Он гласит, что каждый класс должен иметь только одну причину для изменения, то есть выполнять только одну задачу. Это делает код более понятным, поддерживаемым и тестируемым.
+
+Примеры антипаттернов, нарушающих SRP
+1. Класс с множеством обязанностей
+Проблема: Класс выполняет несколько задач, что делает его сложным для понимания и поддержки.
+
+ruby
+Copy
+class Order
+  def process_order(order)
+    # Логика обработки заказа
+  end
+
+  def generate_report(order)
+    # Логика генерации отчета
+  end
+
+  def send_email(customer)
+    # Логика отправки email
+  end
+end
+Нарушение SRP: Класс Order выполняет три задачи: обработка заказа, генерация отчета и отправка email.
+
+2. Метод с множеством задач
+Проблема: Метод выполняет несколько задач, что делает его сложным для тестирования и повторного использования.
+
+ruby
+Copy
+def process_order(order)
+  # Логика проверки заказа
+  if order.items.empty?
+    raise "Order is empty"
+  end
+
+  # Логика расчета стоимости
+  total = order.items.sum(&:price)
+
+  # Логика применения скидки
+  if order.customer.total_purchases > 1000
+    total *= 0.9
+  end
+
+  # Логика отправки уведомления
+  puts "Order processed: #{total}"
+end
+Нарушение SRP: Метод process_order выполняет четыре задачи: проверка заказа, расчет стоимости, применение скидки и отправка уведомления.
+
+Примеры паттернов, реализующих SRP
+1. Разделение класса на несколько классов
+Решение: Разделите класс на несколько классов, каждый из которых выполняет одну задачу.
+
+ruby
+Copy
+class OrderProcessor
+  def process(order)
+    # Логика обработки заказа
+  end
+end
+
+class ReportGenerator
+  def generate(order)
+    # Логика генерации отчета
+  end
+end
+
+class EmailSender
+  def send(customer)
+    # Логика отправки email
+  end
+end
+Соблюдение SRP: Каждый класс выполняет только одну задачу.
+
+2. Разделение метода на несколько методов
+Решение: Разделите метод на несколько методов, каждый из которых выполняет одну задачу.
+
+ruby
+Copy
+def process_order(order)
+  validate_order(order)
+  total = calculate_total(order)
+  total = apply_discount(order, total)
+  send_notification(total)
+end
+
+def validate_order(order)
+  raise "Order is empty" if order.items.empty?
+end
+
+def calculate_total(order)
+  order.items.sum(&:price)
+end
+
+def apply_discount(order, total)
+  order.customer.total_purchases > 1000 ? total * 0.9 : total
+end
+
+def send_notification(total)
+  puts "Order processed: #{total}"
+end
+Соблюдение SRP: Каждый метод выполняет только одну задачу.
+
+Работающие примеры
+Пример 1: Разделение класса на несколько классов
+ruby
+Copy
+class Order
+  attr_accessor :items, :customer
+
+  def initialize(items, customer)
+    @items = items
+    @customer = customer
+  end
+end
+
+class OrderProcessor
+  def process(order)
+    # Логика обработки заказа
+    puts "Order processed"
+  end
+end
+
+class ReportGenerator
+  def generate(order)
+    # Логика генерации отчета
+    puts "Report generated"
+  end
+end
+
+class EmailSender
+  def send(customer)
+    # Логика отправки email
+    puts "Email sent to #{customer}"
+  end
+end
+
+order = Order.new([], "Alice")
+OrderProcessor.new.process(order)
+ReportGenerator.new.generate(order)
+EmailSender.new.send(order.customer)
+Вывод:
+
+Copy
+Order processed
+Report generated
+Email sent to Alice
+Пример 2: Разделение метода на несколько методов
+ruby
+Copy
+class Order
+  attr_accessor :items, :customer
+
+  def initialize(items, customer)
+    @items = items
+    @customer = customer
+  end
+end
+
+def process_order(order)
+  validate_order(order)
+  total = calculate_total(order)
+  total = apply_discount(order, total)
+  send_notification(total)
+end
+
+def validate_order(order)
+  raise "Order is empty" if order.items.empty?
+end
+
+def calculate_total(order)
+  order.items.sum(&:price)
+end
+
+def apply_discount(order, total)
+  order.customer.total_purchases > 1000 ? total * 0.9 : total
+end
+
+def send_notification(total)
+  puts "Order processed: #{total}"
+end
+
+order = Order.new([{ price: 100 }, { price: 200 }], { total_purchases: 1500 })
+process_order(order)
+Вывод:
+
+Copy
+Order processed: 270.0
+Итог
+Принцип единой ответственности (SRP) требует, чтобы каждый класс или метод выполнял только одну задачу.
+
+Антипаттерны, нарушающие SRP, включают классы и методы с множеством обязанностей.
+
+Паттерны, реализующие SRP, включают разделение классов и методов на более мелкие, каждая из которых выполняет одну задачу.
+
+Соблюдение SRP делает код более понятным, поддерживаемым и тестируемым.

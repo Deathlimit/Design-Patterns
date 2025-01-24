@@ -1,0 +1,230 @@
+Принцип инверсии зависимостей (Dependency Inversion Principle, DIP)
+Принцип инверсии зависимостей — это один из пяти принципов SOLID. Он гласит, что:
+
+Модули верхнего уровня не должны зависеть от модулей нижнего уровня. Оба типа модулей должны зависеть от абстракций.
+
+Абстракции не должны зависеть от деталей. Детали должны зависеть от абстракций.
+
+Этот принцип помогает сделать систему более гибкой, расширяемой и тестируемой, уменьшая связанность между компонентами.
+
+Примеры антипаттернов, нарушающих DIP
+1. Прямая зависимость от конкретных классов
+Проблема: Модуль верхнего уровня напрямую зависит от модуля нижнего уровня, что делает систему жестко связанной.
+
+ruby
+Copy
+class ReportGenerator
+  def generate
+    data = Database.new.fetch_data
+    puts "Generating report with data: #{data}"
+  end
+end
+
+class Database
+  def fetch_data
+    "Data from database"
+  end
+end
+
+report_generator = ReportGenerator.new
+report_generator.generate
+Нарушение DIP: Класс ReportGenerator напрямую зависит от класса Database.
+
+2. Зависимость от реализации, а не от абстракции
+Проблема: Модуль зависит от конкретной реализации, а не от абстракции, что затрудняет замену реализации.
+
+ruby
+Copy
+class EmailService
+  def send_email(message)
+    puts "Sending email: #{message}"
+  end
+end
+
+class Notification
+  def initialize
+    @email_service = EmailService.new
+  end
+
+  def send_notification(message)
+    @email_service.send_email(message)
+  end
+end
+
+notification = Notification.new
+notification.send_notification("Hello, World!")
+Нарушение DIP: Класс Notification зависит от конкретной реализации EmailService.
+
+Примеры паттернов, реализующих DIP
+1. Использование абстракций (интерфейсов)
+Решение: Зависимость от абстракций, а не от конкретных классов.
+
+ruby
+Copy
+module DataSource
+  def fetch_data
+    raise NotImplementedError
+  end
+end
+
+class Database
+  include DataSource
+
+  def fetch_data
+    "Data from database"
+  end
+end
+
+class ReportGenerator
+  def initialize(data_source)
+    @data_source = data_source
+  end
+
+  def generate
+    data = @data_source.fetch_data
+    puts "Generating report with data: #{data}"
+  end
+end
+
+database = Database.new
+report_generator = ReportGenerator.new(database)
+report_generator.generate
+Соблюдение DIP: Класс ReportGenerator зависит от абстракции DataSource, а не от конкретного класса Database.
+
+2. Внедрение зависимостей (Dependency Injection)
+Решение: Внедрение зависимостей через конструктор или методы, что позволяет легко заменять реализации.
+
+ruby
+Copy
+module MessageService
+  def send_message(message)
+    raise NotImplementedError
+  end
+end
+
+class EmailService
+  include MessageService
+
+  def send_message(message)
+    puts "Sending email: #{message}"
+  end
+end
+
+class SmsService
+  include MessageService
+
+  def send_message(message)
+    puts "Sending SMS: #{message}"
+  end
+end
+
+class Notification
+  def initialize(message_service)
+    @message_service = message_service
+  end
+
+  def send_notification(message)
+    @message_service.send_message(message)
+  end
+end
+
+email_service = EmailService.new
+notification = Notification.new(email_service)
+notification.send_notification("Hello, World!")
+
+sms_service = SmsService.new
+notification = Notification.new(sms_service)
+notification.send_notification("Hello, World!")
+Соблюдение DIP: Класс Notification зависит от абстракции MessageService, а не от конкретных классов EmailService или SmsService.
+
+Работающие примеры
+Пример 1: Использование абстракций
+ruby
+Copy
+module DataSource
+  def fetch_data
+    raise NotImplementedError
+  end
+end
+
+class Database
+  include DataSource
+
+  def fetch_data
+    "Data from database"
+  end
+end
+
+class ReportGenerator
+  def initialize(data_source)
+    @data_source = data_source
+  end
+
+  def generate
+    data = @data_source.fetch_data
+    puts "Generating report with data: #{data}"
+  end
+end
+
+database = Database.new
+report_generator = ReportGenerator.new(database)
+report_generator.generate
+Вывод:
+
+Copy
+Generating report with data: Data from database
+Пример 2: Внедрение зависимостей
+ruby
+Copy
+module MessageService
+  def send_message(message)
+    raise NotImplementedError
+  end
+end
+
+class EmailService
+  include MessageService
+
+  def send_message(message)
+    puts "Sending email: #{message}"
+  end
+end
+
+class SmsService
+  include MessageService
+
+  def send_message(message)
+    puts "Sending SMS: #{message}"
+  end
+end
+
+class Notification
+  def initialize(message_service)
+    @message_service = message_service
+  end
+
+  def send_notification(message)
+    @message_service.send_message(message)
+  end
+end
+
+email_service = EmailService.new
+notification = Notification.new(email_service)
+notification.send_notification("Hello, World!")
+
+sms_service = SmsService.new
+notification = Notification.new(sms_service)
+notification.send_notification("Hello, World!")
+Вывод:
+
+Copy
+Sending email: Hello, World!
+Sending SMS: Hello, World!
+Итог
+Принцип инверсии зависимостей (DIP) требует, чтобы модули верхнего уровня не зависели от модулей нижнего уровня, а оба типа модулей зависели от абстракций.
+
+Антипаттерны, нарушающие DIP, включают прямую зависимость от конкретных классов и зависимость от реализации, а не от абстракции.
+
+Паттерны, реализующие DIP, включают использование абстракций (интерфейсов) и внедрение зависимостей (Dependency Injection).
+
+Соблюдение DIP делает систему более гибкой, расширяемой и тестируемой.

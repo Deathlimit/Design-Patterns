@@ -1,0 +1,276 @@
+Способы создания экземпляров классов
+В Ruby (и в ООП в целом) есть несколько способов создания экземпляров классов. Они могут быть как простыми, так и сложными, в зависимости от требований к гибкости, читаемости и поддерживаемости кода. Давайте рассмотрим основные подходы и примеры.
+
+1. Прямое создание экземпляра через new
+Самый простой и распространенный способ — использование метода new.
+
+Пример:
+ruby
+Copy
+class User
+  attr_accessor :name, :age
+
+  def initialize(name, age)
+    @name = name
+    @age = age
+  end
+end
+
+user = User.new("Alice", 30)
+puts "Name: #{user.name}, Age: #{user.age}"
+# Output: Name: Alice, Age: 30
+Плюсы:
+
+Простота и понятность.
+
+Подходит для большинства случаев.
+
+Минусы:
+
+Если логика создания объекта усложняется, код может стать громоздким.
+
+2. Использование фабричных методов
+Фабричные методы — это методы, которые создают и возвращают экземпляры класса. Они полезны, когда нужно скрыть сложную логику создания объекта.
+
+Пример:
+ruby
+Copy
+class Product
+  attr_accessor :name, :price
+
+  def initialize(name, price)
+    @name = name
+    @price = price
+  end
+
+  def self.create_discount_product(name, price, discount)
+    new(name, price - discount)
+  end
+end
+
+product = Product.create_discount_product("Laptop", 1000, 200)
+puts "Product: #{product.name}, Price: #{product.price}"
+# Output: Product: Laptop, Price: 800
+Плюсы:
+
+Логика создания объекта инкапсулирована.
+
+Упрощает создание объектов с разными параметрами.
+
+Минусы:
+
+Может привести к увеличению количества методов в классе.
+
+3. Использование паттерна "Фабрика" (Factory)
+Фабрика — это отдельный класс, отвечающий за создание объектов. Это полезно, когда логика создания объектов сложная или зависит от внешних условий.
+
+Пример:
+ruby
+Copy
+class Car
+  attr_accessor :model
+
+  def initialize(model)
+    @model = model
+  end
+end
+
+class CarFactory
+  def self.create_car(type)
+    case type
+    when :sedan
+      Car.new("Sedan")
+    when :suv
+      Car.new("SUV")
+    else
+      raise "Unknown car type"
+    end
+  end
+end
+
+car = CarFactory.create_car(:suv)
+puts "Car model: #{car.model}"
+# Output: Car model: SUV
+Плюсы:
+
+Логика создания объектов вынесена в отдельный класс.
+
+Упрощает добавление новых типов объектов.
+
+Минусы:
+
+Требует создания дополнительного класса.
+
+4. Использование паттерна "Строитель" (Builder)
+Строитель используется для пошагового создания сложных объектов. Это полезно, когда объект имеет много параметров или требует сложной инициализации.
+
+Пример:
+ruby
+Copy
+class Pizza
+  attr_accessor :size, :cheese, :pepperoni, :bacon
+
+  def initialize(size)
+    @size = size
+  end
+end
+
+class PizzaBuilder
+  def initialize(size)
+    @pizza = Pizza.new(size)
+  end
+
+  def add_cheese
+    @pizza.cheese = true
+    self
+  end
+
+  def add_pepperoni
+    @pizza.pepperoni = true
+    self
+  end
+
+  def add_bacon
+    @pizza.bacon = true
+    self
+  end
+
+  def build
+    @pizza
+  end
+end
+
+pizza = PizzaBuilder.new("Large")
+                .add_cheese
+                .add_pepperoni
+                .build
+
+puts "Pizza: Size=#{pizza.size}, Cheese=#{pizza.cheese}, Pepperoni=#{pizza.pepperoni}"
+# Output: Pizza: Size=Large, Cheese=true, Pepperoni=true
+Плюсы:
+
+Позволяет создавать объекты пошагово.
+
+Упрощает работу с объектами, имеющими много параметров.
+
+Минусы:
+
+Требует создания дополнительного класса-строителя.
+
+5. Использование паттерна "Одиночка" (Singleton)
+Одиночка гарантирует, что у класса будет только один экземпляр, и предоставляет глобальную точку доступа к нему.
+
+Пример:
+ruby
+Copy
+require 'singleton'
+
+class Logger
+  include Singleton
+
+  def log(message)
+    puts "Log: #{message}"
+  end
+end
+
+logger = Logger.instance
+logger.log("Hello, World!")
+# Output: Log: Hello, World!
+Плюсы:
+
+Гарантирует единственный экземпляр класса.
+
+Удобен для управления глобальными ресурсами.
+
+Минусы:
+
+Может затруднять тестирование из-за глобального состояния.
+
+Некачественный подход
+Пример:
+ruby
+Copy
+class User
+  attr_accessor :name, :age
+
+  def initialize(name, age)
+    @name = name
+    @age = age
+  end
+end
+
+# Создание объекта с хардкодом параметров
+user = User.new("Alice", 30)
+puts "Name: #{user.name}, Age: #{user.age}"
+Проблемы:
+
+Логика создания объекта не инкапсулирована.
+
+При изменении параметров нужно менять код в нескольких местах.
+
+Качественный подход
+Пример:
+ruby
+Copy
+class User
+  attr_accessor :name, :age
+
+  def initialize(name, age)
+    @name = name
+    @age = age
+  end
+
+  def self.create_user(name, age)
+    # Дополнительная логика валидации
+    raise "Invalid age" if age < 0
+    new(name, age)
+  end
+end
+
+user = User.create_user("Alice", 30)
+puts "Name: #{user.name}, Age: #{user.age}"
+Преимущества:
+
+Логика создания объекта инкапсулирована.
+
+Упрощается поддержка и расширение кода.
+
+Паттерны проектирования, связанные с созданием объектов
+Фабричный метод (Factory Method)
+
+Определяет интерфейс для создания объекта, но оставляет подклассам решение о том, какой класс инстанцировать.
+
+Пример: CarFactory.create_car.
+
+Абстрактная фабрика (Abstract Factory)
+
+Предоставляет интерфейс для создания семейств связанных объектов.
+
+Пример: Создание мебели в одном стиле (классика, модерн).
+
+Строитель (Builder)
+
+Позволяет создавать сложные объекты пошагово.
+
+Пример: PizzaBuilder.
+
+Одиночка (Singleton)
+
+Гарантирует, что у класса будет только один экземпляр.
+
+Пример: Logger.
+
+Прототип (Prototype)
+
+Позволяет копировать существующие объекты вместо создания новых.
+
+Пример: Клонирование объектов.
+
+Итог
+Прямое создание через new подходит для простых случаев.
+
+Фабричные методы и паттерны (Фабрика, Строитель) полезны для сложной логики создания объектов.
+
+Одиночка используется для управления глобальными ресурсами.
+
+Качественный подход предполагает инкапсуляцию логики создания объектов и использование паттернов.

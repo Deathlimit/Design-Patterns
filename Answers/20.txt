@@ -1,0 +1,315 @@
+Антипаттерны и методы их исправления
+Антипаттерны — это распространённые подходы к написанию кода, которые кажутся удобными на первый взгляд, но на самом деле ухудшают качество кода, делая его менее поддерживаемым, расширяемым и понятным. Давайте рассмотрим несколько антипаттернов, их причины, примеры и способы исправления.
+
+1. Дублирование кода (Duplicate Code)
+Почему это антипаттерн?
+Дублирование кода приводит к тому, что изменения нужно вносить в нескольких местах, что увеличивает вероятность ошибок и усложняет поддержку.
+
+Пример:
+ruby
+Copy
+def calculate_area_of_circle(radius)
+  Math::PI * radius ** 2
+end
+
+def calculate_circumference_of_circle(radius)
+  2 * Math::PI * radius
+end
+Проблема: Код для работы с окружностью дублируется в двух методах.
+
+Метод рефакторинга:
+Извлечение метода (Extract Method):
+Вынесите общий код в отдельный метод.
+
+ruby
+Copy
+def calculate_area_of_circle(radius)
+  circle_math(radius) * radius
+end
+
+def calculate_circumference_of_circle(radius)
+  2 * circle_math(radius)
+end
+
+def circle_math(radius)
+  Math::PI * radius
+end
+Паттерны, помогающие избежать:
+DRY (Don't Repeat Yourself): Не повторяйся.
+
+Принцип единственной ответственности (Single Responsibility Principle).
+
+2. Длинный метод (Long Method)
+Почему это антипаттерн?
+Длинные методы трудно читать, понимать и тестировать. Они часто выполняют несколько задач, что нарушает принцип единственной ответственности.
+
+Пример:
+ruby
+Copy
+def process_order(order)
+  # Логика проверки заказа
+  if order.items.empty?
+    raise "Order is empty"
+  end
+
+  # Логика расчета стоимости
+  total = order.items.sum(&:price)
+
+  # Логика применения скидки
+  if order.customer.total_purchases > 1000
+    total *= 0.9
+  end
+
+  # Логика отправки уведомления
+  puts "Order processed: #{total}"
+end
+Проблема: Метод process_order выполняет несколько задач.
+
+Метод рефакторинга:
+Извлечение метода (Extract Method):
+Разбейте метод на несколько более мелких методов.
+
+ruby
+Copy
+def process_order(order)
+  validate_order(order)
+  total = calculate_total(order)
+  total = apply_discount(order, total)
+  send_notification(total)
+end
+
+def validate_order(order)
+  raise "Order is empty" if order.items.empty?
+end
+
+def calculate_total(order)
+  order.items.sum(&:price)
+end
+
+def apply_discount(order, total)
+  order.customer.total_purchases > 1000 ? total * 0.9 : total
+end
+
+def send_notification(total)
+  puts "Order processed: #{total}"
+end
+Паттерны, помогающие избежать:
+Принцип единственной ответственности (Single Responsibility Principle).
+
+KISS (Keep It Simple, Stupid): Код должен быть простым и понятным.
+
+3. Длинный класс (Large Class)
+Почему это антипаттерн?
+Класс, который выполняет слишком много задач, становится трудно поддерживать и тестировать. Это нарушает принцип единственной ответственности.
+
+Пример:
+ruby
+Copy
+class Order
+  def process_order(order)
+    # Логика обработки заказа
+  end
+
+  def send_email(customer)
+    # Логика отправки email
+  end
+
+  def generate_report(order)
+    # Логика генерации отчета
+  end
+end
+Проблема: Класс Order выполняет слишком много задач.
+
+Метод рефакторинга:
+Разделение класса (Extract Class):
+Разделите класс на несколько более мелких классов.
+
+ruby
+Copy
+class OrderProcessor
+  def process(order)
+    # Логика обработки заказа
+  end
+end
+
+class EmailSender
+  def send(customer)
+    # Логика отправки email
+  end
+end
+
+class ReportGenerator
+  def generate(order)
+    # Логика генерации отчета
+  end
+end
+Паттерны, помогающие избежать:
+Принцип единственной ответственности (Single Responsibility Principle).
+
+Разделение обязанностей (Separation of Concerns).
+
+4. Длинный список параметров (Long Parameter List)
+Почему это антипаттерн?
+Метод с большим количеством параметров трудно использовать и поддерживать. Это также может указывать на то, что метод выполняет слишком много задач.
+
+Пример:
+ruby
+Copy
+def create_user(name, email, address, phone, age, gender)
+  # Логика создания пользователя
+end
+Проблема: Метод create_user принимает слишком много параметров.
+
+Метод рефакторинга:
+Замена параметров объектом (Introduce Parameter Object):
+Создайте класс для хранения параметров.
+
+ruby
+Copy
+class UserParams
+  attr_accessor :name, :email, :address, :phone, :age, :gender
+
+  def initialize(name, email, address, phone, age, gender)
+    @name = name
+    @email = email
+    @address = address
+    @phone = phone
+    @age = age
+    @gender = gender
+  end
+end
+
+def create_user(user_params)
+  # Логика создания пользователя
+end
+Паттерны, помогающие избежать:
+Принцип единственной ответственности (Single Responsibility Principle).
+
+Инкапсуляция (Encapsulation).
+
+5. Повторы условных операторов (Repeated Conditionals)
+Почему это антипаттерн?
+Повторяющиеся условные операторы усложняют код и увеличивают вероятность ошибок при изменении логики.
+
+Пример:
+ruby
+Copy
+def calculate_discount(customer)
+  if customer.total_purchases > 1000
+    0.1
+  else
+    0.05
+  end
+end
+
+def calculate_shipping(customer)
+  if customer.total_purchases > 1000
+    "Free"
+  else
+    "$10"
+  end
+end
+Проблема: Условный оператор повторяется в нескольких методах.
+
+Метод рефакторинга:
+Замена условного оператора полиморфизмом (Replace Conditional with Polymorphism):
+Используйте полиморфизм для устранения повторяющихся условных операторов.
+
+ruby
+Copy
+class Customer
+  def discount
+    raise NotImplementedError
+  end
+
+  def shipping
+    raise NotImplementedError
+  end
+end
+
+class RegularCustomer < Customer
+  def discount
+    0.05
+  end
+
+  def shipping
+    "$10"
+  end
+end
+
+class VIPCustomer < Customer
+  def discount
+    0.1
+  end
+
+  def shipping
+    "Free"
+  end
+end
+Паттерны, помогающие избежать:
+Полиморфизм (Polymorphism).
+
+Принцип открытости/закрытости (Open/Closed Principle).
+
+6. Альтернативные классы с разными интерфейсами (Alternative Classes with Different Interfaces)
+Почему это антипаттерн?
+Классы, которые выполняют схожие функции, но имеют разные интерфейсы, усложняют код и делают его менее универсальным.
+
+Пример:
+ruby
+Copy
+class Circle
+  def area(radius)
+    Math::PI * radius ** 2
+  end
+end
+
+class Square
+  def calculate_area(side)
+    side ** 2
+  end
+end
+Проблема: Классы Circle и Square выполняют схожие функции, но имеют разные интерфейсы.
+
+Метод рефакторинга:
+Унификация интерфейса (Unify Interface):
+Создайте общий интерфейс для классов.
+
+ruby
+Copy
+class Shape
+  def area
+    raise NotImplementedError
+  end
+end
+
+class Circle < Shape
+  def initialize(radius)
+    @radius = radius
+  end
+
+  def area
+    Math::PI * @radius ** 2
+  end
+end
+
+class Square < Shape
+  def initialize(side)
+    @side = side
+  end
+
+  def area
+    @side ** 2
+  end
+end
+Паттерны, помогающие избежать:
+Принцип подстановки Барбары Лисков (Liskov Substitution Principle).
+
+Интерфейсы (Interfaces).
+
+Итог
+Дублирование кода, длинный метод, длинный класс, длинный список параметров, повторы условных операторов и альтернативные классы с разными интерфейсами — это антипаттерны, которые ухудшают качество кода.
+
+Методы рефакторинга, такие как извлечение метода, разделение класса, замена параметров объектом и замена условного оператора полиморфизмом, помогают исправить эти антипаттерны.
+
+Паттерны, такие как принцип единственной ответственности, полиморфизм и инкапсуляция, помогают избежать этих ошибок.

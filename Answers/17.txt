@@ -1,0 +1,134 @@
+Архитектурные паттерны
+Архитектурные паттерны — это высокоуровневые шаблоны, которые определяют структуру и организацию приложения. Они помогают решать проблемы, связанные с масштабируемостью, поддерживаемостью и тестируемостью приложения. Давайте рассмотрим основные архитектурные паттерны, их базовые подходы и применение в различных языках и фреймворках.
+
+Основные архитектурные паттерны
+MVC (Model-View-Controller):
+
+Базовый подход: Разделение приложения на три компонента: Model (данные и бизнес-логика), View (отображение данных), Controller (управление взаимодействием между Model и View).
+
+Применение: Ruby on Rails, Django, Spring MVC, ASP.NET MVC.
+
+MVP (Model-View-Presenter):
+
+Базовый подход: Разделение приложения на три компонента: Model (данные и бизнес-логика), View (отображение данных), Presenter (посредник между Model и View).
+
+Применение: Android Development, Windows Forms, GWT.
+
+MVVM (Model-View-ViewModel):
+
+Базовый подход: Разделение приложения на три компонента: Model (данные и бизнес-логика), View (отображение данных), ViewModel (посредник между Model и View, обеспечивающий привязку данных).
+
+Применение: WPF, Xamarin, Angular, Knockout.js.
+
+Layered Architecture (Многослойная архитектура):
+
+Базовый подход: Разделение приложения на слои (например, Presentation Layer, Business Logic Layer, Data Access Layer).
+
+Применение: Enterprise-приложения, Java EE, .NET.
+
+Microservices (Микросервисы):
+
+Базовый подход: Разделение приложения на небольшие, независимые сервисы, которые взаимодействуют через API.
+
+Применение: Kubernetes, Docker, Spring Boot, .NET Core.
+
+Event-Driven Architecture (Событийно-ориентированная архитектура):
+
+Базовый подход: Организация приложения вокруг событий и их обработчиков.
+
+Применение: Apache Kafka, RabbitMQ, Node.js.
+
+CQRS (Command Query Responsibility Segregation):
+
+Базовый подход: Разделение операций чтения и записи данных на отдельные модели.
+
+Применение: Event Sourcing, DDD (Domain-Driven Design), .NET.
+
+Hexagonal Architecture (Порт и адаптер):
+
+Базовый подход: Разделение приложения на ядро (core) и адаптеры (adapters), которые взаимодействуют с внешними системами.
+
+Применение: DDD, Java, .NET.
+
+Паттерн, применённый в фреймворке Ruby on Rails (MVC)
+Ruby on Rails использует архитектурный паттерн MVC. Давайте рассмотрим, как это работает.
+
+Базовый подход:
+Model: Отвечает за данные и бизнес-логику. В Rails это обычно ActiveRecord-модели.
+
+View: Отвечает за отображение данных. В Rails это ERB, Haml или Slim шаблоны.
+
+Controller: Управляет взаимодействием между Model и View. В Rails это контроллеры, которые обрабатывают запросы и возвращают ответы.
+
+Взаимодействие объектов в рамках операций CRUD
+Рассмотрим пример взаимодействия объектов в рамках операций CRUD (Create, Read, Update, Delete) на диаграмме последовательности.
+
+Сценарий: Создание новой записи (Create)
+Пользователь отправляет HTTP-запрос на создание новой записи.
+
+Controller получает запрос и передает данные в Model.
+
+Model сохраняет данные в базе данных.
+
+Model уведомляет Controller об успешном создании.
+
+Controller возвращает ответ в View.
+
+View отображает результат пользователю.
+
+Диаграмма последовательности:
+Copy
++--------+       +-----------+       +--------+       +--------+
+| :User  |       | :View     |       | :Controller |   | :Model |
++--------+       +-----------+       +--------+       +--------+
+    |                |                    |                |
+    |--- HTTP POST ->|                    |                |
+    |                |--- create() ------>|                |
+    |                |                    |--- save() ---->|
+    |                |                    |                |--- DB Save ---|
+    |                |<-- render() -------|<-- notify() ---|
+    |<-- HTTP 200 ---|                    |                |
+    |                |                    |                |
+Код:
+ruby
+Copy
+# app/controllers/posts_controller.rb
+class PostsController < ApplicationController
+  def create
+    @post = Post.new(post_params)
+    if @post.save
+      redirect_to @post, notice: 'Post was successfully created.'
+    else
+      render :new
+    end
+  end
+
+  private
+
+  def post_params
+    params.require(:post).permit(:title, :content)
+  end
+end
+
+# app/models/post.rb
+class Post < ApplicationRecord
+  validates :title, presence: true
+  validates :content, presence: true
+end
+
+# app/views/posts/new.html.erb
+<%= form_with model: @post, local: true do |form| %>
+  <%= form.label :title %>
+  <%= form.text_field :title %>
+  <%= form.label :content %>
+  <%= form.text_area :content %>
+  <%= form.submit 'Create Post' %>
+<% end %>
+Итог
+MVC — это архитектурный паттерн, который разделяет приложение на три компонента: Model, View, Controller.
+
+Ruby on Rails использует MVC для организации кода и упрощения разработки веб-приложений.
+
+Диаграмма последовательности иллюстрирует взаимодействие объектов в рамках операций CRUD.
+
+MVC применяется во многих популярных фреймворках, таких как Ruby on Rails, Django, Spring MVC и ASP.NET MVC.

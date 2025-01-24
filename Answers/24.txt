@@ -1,0 +1,201 @@
+Принцип подстановки Барбары Лисков (Liskov Substitution Principle, LSP)
+Принцип подстановки Барбары Лисков — это один из пяти принципов SOLID. Он гласит, что объекты в программе должны быть заменяемы экземплярами их подтипов без изменения правильности работы программы. Другими словами, подклассы должны дополнять, а не изменять поведение базового класса.
+
+Примеры антипаттернов, нарушающих LSP
+1. Нарушение контракта базового класса
+Проблема: Подкласс изменяет поведение базового класса, что приводит к ошибкам при замене базового класса на подкласс.
+
+ruby
+Copy
+class Bird
+  def fly
+    puts "Flying"
+  end
+end
+
+class Penguin < Bird
+  def fly
+    raise "Penguins can't fly!"
+  end
+end
+Нарушение LSP: Подкласс Penguin изменяет поведение метода fly, что нарушает контракт базового класса Bird.
+
+2. Усиление предусловий
+Проблема: Подкласс усиливает предусловия метода, что может привести к ошибкам при замене базового класса на подкласс.
+
+ruby
+Copy
+class Rectangle
+  attr_accessor :width, :height
+
+  def initialize(width, height)
+    @width = width
+    @height = height
+  end
+
+  def area
+    width * height
+  end
+end
+
+class Square < Rectangle
+  def initialize(side)
+    super(side, side)
+  end
+
+  def width=(side)
+    @width = side
+    @height = side
+  end
+
+  def height=(side)
+    @width = side
+    @height = side
+  end
+end
+Нарушение LSP: Подкласс Square изменяет поведение методов width= и height=, что нарушает контракт базового класса Rectangle.
+
+Примеры паттернов, реализующих LSP
+1. Соблюдение контракта базового класса
+Решение: Подклассы должны дополнять, а не изменять поведение базового класса.
+
+ruby
+Copy
+class Bird
+  def fly
+    puts "Flying"
+  end
+end
+
+class Sparrow < Bird
+  def fly
+    puts "Sparrow is flying"
+  end
+end
+
+class Ostrich < Bird
+  def fly
+    puts "Ostrich can't fly"
+  end
+end
+
+def make_bird_fly(bird)
+  bird.fly
+end
+
+make_bird_fly(Sparrow.new)
+make_bird_fly(Ostrich.new)
+Соблюдение LSP: Подклассы Sparrow и Ostrich дополняют поведение базового класса Bird, не изменяя его.
+
+2. Использование интерфейсов
+Решение: Используйте интерфейсы для определения контрактов, которые должны соблюдать подклассы.
+
+ruby
+Copy
+module Flyable
+  def fly
+    raise NotImplementedError
+  end
+end
+
+class Bird
+  include Flyable
+end
+
+class Sparrow < Bird
+  def fly
+    puts "Sparrow is flying"
+  end
+end
+
+class Ostrich < Bird
+  def fly
+    puts "Ostrich can't fly"
+  end
+end
+
+def make_bird_fly(bird)
+  bird.fly
+end
+
+make_bird_fly(Sparrow.new)
+make_bird_fly(Ostrich.new)
+Соблюдение LSP: Подклассы Sparrow и Ostrich реализуют интерфейс Flyable, соблюдая контракт базового класса Bird.
+
+Работающие примеры
+Пример 1: Соблюдение контракта базового класса
+ruby
+Copy
+class Bird
+  def fly
+    puts "Flying"
+  end
+end
+
+class Sparrow < Bird
+  def fly
+    puts "Sparrow is flying"
+  end
+end
+
+class Ostrich < Bird
+  def fly
+    puts "Ostrich can't fly"
+  end
+end
+
+def make_bird_fly(bird)
+  bird.fly
+end
+
+make_bird_fly(Sparrow.new)
+make_bird_fly(Ostrich.new)
+Вывод:
+
+Copy
+Sparrow is flying
+Ostrich can't fly
+Пример 2: Использование интерфейсов
+ruby
+Copy
+module Flyable
+  def fly
+    raise NotImplementedError
+  end
+end
+
+class Bird
+  include Flyable
+end
+
+class Sparrow < Bird
+  def fly
+    puts "Sparrow is flying"
+  end
+end
+
+class Ostrich < Bird
+  def fly
+    puts "Ostrich can't fly"
+  end
+end
+
+def make_bird_fly(bird)
+  bird.fly
+end
+
+make_bird_fly(Sparrow.new)
+make_bird_fly(Ostrich.new)
+Вывод:
+
+Copy
+Sparrow is flying
+Ostrich can't fly
+Итог
+Принцип подстановки Барбары Лисков (LSP) требует, чтобы подклассы дополняли, а не изменяли поведение базового класса.
+
+Антипаттерны, нарушающие LSP, включают изменение поведения базового класса и усиление предусловий.
+
+Паттерны, реализующие LSP, включают соблюдение контракта базового класса и использование интерфейсов.
+
+Соблюдение LSP делает код более гибким и предсказуемым.

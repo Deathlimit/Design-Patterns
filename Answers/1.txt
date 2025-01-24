@@ -1,0 +1,204 @@
+Основные принципы объектно-ориентированного программирования (ООП) — это инкапсуляция, наследование, полиморфизм и абстракция. Давайте разберем каждый из них подробно и проиллюстрируем примерами на Ruby.
+
+1. Инкапсуляция
+Инкапсуляция — это принцип, который позволяет скрывать внутреннюю реализацию объекта от внешнего мира, предоставляя только необходимый интерфейс для взаимодействия. Это достигается с помощью модификаторов доступа (например, private, protected, public).
+
+Пример:
+ruby
+Copy
+class BankAccount
+  def initialize(balance)
+    @balance = balance
+  end
+
+  def deposit(amount)
+    @balance += amount
+  end
+
+  def withdraw(amount)
+    if amount <= @balance
+      @balance -= amount
+    else
+      puts "Insufficient funds"
+    end
+  end
+
+  def check_balance
+    @balance
+  end
+
+  private
+
+  def log_transaction
+    puts "Transaction logged"
+  end
+end
+
+account = BankAccount.new(100)
+account.deposit(50)
+account.withdraw(30)
+puts "Current balance: #{account.check_balance}"
+# account.log_transaction # Ошибка: private метод недоступен извне
+Объяснение:
+
+Методы deposit и withdraw предоставляют интерфейс для работы с балансом.
+
+Переменная @balance и метод log_transaction скрыты от внешнего мира (инкапсулированы).
+
+2. Наследование
+Наследование позволяет создавать новые классы на основе существующих, переиспользуя их функциональность и расширяя её. Это помогает избежать дублирования кода.
+
+Пример:
+ruby
+Copy
+class Animal
+  def speak
+    puts "Animal sound"
+  end
+end
+
+class Dog < Animal
+  def speak
+    puts "Woof!"
+  end
+end
+
+class Cat < Animal
+  def speak
+    puts "Meow!"
+  end
+end
+
+dog = Dog.new
+dog.speak # Woof!
+
+cat = Cat.new
+cat.speak # Meow!
+Объяснение:
+
+Классы Dog и Cat наследуют метод speak от класса Animal, но переопределяют его поведение.
+
+Это демонстрирует принцип наследования и переопределения методов.
+
+3. Полиморфизм
+Полиморфизм позволяет объектам разных классов использовать одинаковые методы, но с разной реализацией. Это достигается через наследование и переопределение методов.
+
+Пример:
+ruby
+Copy
+class Bird
+  def fly
+    puts "Flying in the sky"
+  end
+end
+
+class Penguin < Bird
+  def fly
+    puts "I can't fly, but I can swim!"
+  end
+end
+
+def make_bird_fly(bird)
+  bird.fly
+end
+
+bird = Bird.new
+penguin = Penguin.new
+
+make_bird_fly(bird)    # Flying in the sky
+make_bird_fly(penguin) # I can't fly, but I can swim!
+Объяснение:
+
+Метод fly ведет себя по-разному в зависимости от типа объекта (Bird или Penguin).
+
+Это пример полиморфизма: один интерфейс (fly), но разная реализация.
+
+4. Абстракция
+Абстракция позволяет выделять только важные характеристики объекта, игнорируя несущественные детали. Это достигается через создание классов и методов, которые скрывают сложность.
+
+Пример:
+ruby
+Copy
+class Car
+  def start_engine
+    check_fuel
+    ignite_spark_plug
+    puts "Engine started"
+  end
+
+  private
+
+  def check_fuel
+    puts "Checking fuel level"
+  end
+
+  def ignite_spark_plug
+    puts "Igniting spark plug"
+  end
+end
+
+car = Car.new
+car.start_engine
+# Output:
+# Checking fuel level
+# Igniting spark plug
+# Engine started
+Объяснение:
+
+Метод start_engine предоставляет простой интерфейс для запуска двигателя.
+
+Внутренние детали (check_fuel, ignite_spark_plug) скрыты от пользователя, что демонстрирует абстракцию.
+
+Нарушение принципов ООП
+Рассмотрим пример, где нарушаются принципы ООП.
+
+Пример нарушения инкапсуляции:
+ruby
+Copy
+class User
+  attr_accessor :password
+
+  def initialize(password)
+    @password = password
+  end
+end
+
+user = User.new("secret")
+puts user.password # "secret"
+Проблема:
+
+Пароль пользователя доступен напрямую, что нарушает инкапсуляцию и безопасность.
+
+Исправленный пример:
+ruby
+Copy
+class User
+  def initialize(password)
+    @password = password
+  end
+
+  def authenticate(input_password)
+    @password == input_password
+  end
+
+  private
+
+  attr_reader :password
+end
+
+user = User.new("secret")
+puts user.authenticate("wrong") # false
+puts user.authenticate("secret") # true
+# user.password # Ошибка: private метод недоступен
+Исправление:
+
+Пароль теперь скрыт, и доступ к нему возможен только через метод authenticate.
+
+Итог
+Инкапсуляция скрывает детали реализации.
+
+Наследование позволяет переиспользовать код.
+
+Полиморфизм обеспечивает гибкость через единый интерфейс.
+
+Абстракция упрощает сложность, выделяя важные аспекты.

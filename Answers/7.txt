@@ -1,0 +1,192 @@
+Паттерны проектирования
+Паттерны проектирования (design patterns) — это типичные решения часто встречающихся проблем в проектировании программного обеспечения. Они представляют собой готовые шаблоны, которые можно адаптировать для решения конкретных задач. Паттерны не являются готовым кодом, а скорее концепциями, которые можно реализовать на любом языке программирования.
+
+Классификация паттернов
+Паттерны проектирования принято классифицировать на три основные категории:
+
+Порождающие паттерны (Creational Patterns):
+
+Решают задачи создания объектов.
+
+Примеры: Singleton, Factory Method, Abstract Factory, Builder, Prototype.
+
+Структурные паттерны (Structural Patterns):
+
+Решают задачи композиции классов и объектов.
+
+Примеры: Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy.
+
+Поведенческие паттерны (Behavioral Patterns):
+
+Решают задачи взаимодействия объектов и распределения ответственности.
+
+Примеры: Observer, Strategy, Command, Iterator, State, Template Method, Visitor, Chain of Responsibility, Mediator, Memento.
+
+Взаимосвязь паттернов проектирования, архитектурных паттернов и фреймворков
+Паттерны проектирования:
+
+Решают локальные задачи на уровне классов и объектов.
+
+Пример: Паттерн Singleton гарантирует, что у класса будет только один экземпляр.
+
+Архитектурные паттерны:
+
+Решают глобальные задачи на уровне всей системы или приложения.
+
+Примеры: MVC (Model-View-Controller), MVVM (Model-View-ViewModel), Microservices, Layered Architecture.
+
+Фреймворки:
+
+Это готовые решения, которые реализуют определенные архитектурные паттерны и могут использовать паттерны проектирования внутри себя.
+
+Пример: Ruby on Rails использует архитектурный паттерн MVC и внутри себя применяет паттерны проектирования, такие как Observer (для callback-ов) и Singleton (для подключения к базе данных).
+
+Примеры паттернов проектирования
+1. Singleton (Порождающий паттерн)
+Гарантирует, что у класса будет только один экземпляр.
+
+ruby
+Copy
+require 'singleton'
+
+class Logger
+  include Singleton
+
+  def log(message)
+    puts "Log: #{message}"
+  end
+end
+
+logger = Logger.instance
+logger.log("Hello, World!")
+# Output: Log: Hello, World!
+2. Factory Method (Порождающий паттерн)
+Определяет интерфейс для создания объекта, но оставляет подклассам решение о том, какой класс инстанцировать.
+
+ruby
+Copy
+class Product
+  def use
+    raise NotImplementedError
+  end
+end
+
+class ConcreteProduct < Product
+  def use
+    puts "Using ConcreteProduct"
+  end
+end
+
+class Creator
+  def factory_method
+    ConcreteProduct.new
+  end
+end
+
+creator = Creator.new
+product = creator.factory_method
+product.use # Using ConcreteProduct
+3. Adapter (Структурный паттерн)
+Преобразует интерфейс одного класса в интерфейс, ожидаемый другим классом.
+
+ruby
+Copy
+class LegacyPrinter
+  def print_text(text)
+    puts "Legacy Printer: #{text}"
+  end
+end
+
+class ModernPrinter
+  def initialize(printer)
+    @printer = printer
+  end
+
+  def print(text)
+    @printer.print_text(text)
+  end
+end
+
+legacy_printer = LegacyPrinter.new
+modern_printer = ModernPrinter.new(legacy_printer)
+modern_printer.print("Hello, World!") # Legacy Printer: Hello, World!
+4. Observer (Поведенческий паттерн)
+Позволяет объектам подписываться на события и получать уведомления об изменениях.
+
+ruby
+Copy
+class Subject
+  attr_accessor :observers
+
+  def initialize
+    @observers = []
+  end
+
+  def add_observer(observer)
+    @observers << observer
+  end
+
+  def notify_observers
+    @observers.each { |observer| observer.update(self) }
+  end
+end
+
+class Observer
+  def update(subject)
+    puts "Observer received update from #{subject}"
+  end
+end
+
+subject = Subject.new
+observer = Observer.new
+subject.add_observer(observer)
+subject.notify_observers # Observer received update from #<Subject:0x00007f8e1d0b0e80>
+Пример архитектурного паттерна: MVC
+MVC (Model-View-Controller) — это архитектурный паттерн, который разделяет приложение на три компонента:
+
+Model: Отвечает за данные и бизнес-логику.
+
+View: Отвечает за отображение данных.
+
+Controller: Управляет взаимодействием между Model и View.
+
+Пример в Ruby on Rails:
+ruby
+Copy
+# app/models/user.rb
+class User < ApplicationRecord
+  validates :name, presence: true
+end
+
+# app/controllers/users_controller.rb
+class UsersController < ApplicationController
+  def show
+    @user = User.find(params[:id])
+  end
+end
+
+# app/views/users/show.html.erb
+<h1><%= @user.name %></h1>
+Взаимосвязь паттернов и фреймворков
+Фреймворки используют архитектурные паттерны:
+
+Ruby on Rails использует MVC.
+
+Angular использует MVVM.
+
+Фреймворки используют паттерны проектирования:
+
+Rails использует Observer для callback-ов.
+
+Django использует Singleton для подключения к базе данных.
+
+Паттерны проектирования помогают решать задачи внутри фреймворков:
+
+Например, паттерн Factory Method может использоваться для создания объектов в Rails.
+
+Итог
+Паттерны проектирования решают локальные задачи на уровне классов и объектов.
+
+Архитектурные паттерны решают глобальные задачи на уровне системы.
+
+Фреймворки реализуют архитектурные паттерны и используют паттерны проектирования внутри себя.
